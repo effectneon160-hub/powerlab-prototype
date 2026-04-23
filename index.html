@@ -1,0 +1,3053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POWER LAB — Cricket Coaching Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700;900&family=Barlow+Condensed:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #1a1a24;
+    --card: #16161f;
+    --card2: #1e1e2a;
+    --orange: #ff6b1a;
+    --orange2: #ff8c42;
+    --green: #00e676;
+    --green2: #00c853;
+    --blue: #2979ff;
+    --blue2: #448aff;
+    --purple: #aa00ff;
+    --text: #f0f0f8;
+    --text2: #a0a0b8;
+    --text3: #5a5a7a;
+    --border: rgba(255,255,255,0.07);
+    --glow-o: rgba(255,107,26,0.3);
+    --glow-g: rgba(0,230,118,0.25);
+    --glow-b: rgba(41,121,255,0.25);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Barlow', sans-serif;
+    overflow: hidden;
+  }
+
+  /* PHONE SHELL */
+  .phone-shell {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border-radius: 44px;
+    border: 2px solid rgba(255,255,255,0.12);
+    box-shadow: 0 0 0 8px #111, 0 0 80px rgba(255,107,26,0.15), 0 60px 120px rgba(0,0,0,0.8);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .notch {
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 28px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 1000;
+  }
+  .status-bar {
+    height: 44px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 999;
+  }
+  .status-icons { display:flex; gap:6px; align-items:center; }
+  .status-icons span { font-size: 10px; }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .screen.active { display: flex; }
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .scroll-area::-webkit-scrollbar { display: none; }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    height: 72px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px 10px;
+    flex-shrink: 0;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    flex: 1;
+  }
+  .nav-item:hover { background: var(--card); }
+  .nav-item.active .nav-icon { color: var(--orange); }
+  .nav-item.active .nav-label { color: var(--orange); }
+  .nav-icon { font-size: 22px; color: var(--text3); transition: color 0.2s; }
+  .nav-label { font-size: 10px; font-weight: 600; color: var(--text3); transition: color 0.2s; letter-spacing: 0.3px; }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    position: absolute;
+    top: -2px; right: -2px;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 24px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px var(--glow-o);
+  }
+  .btn-primary:hover { background: var(--orange2); transform: translateY(-1px); }
+  .btn-secondary {
+    background: var(--card2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 15px 24px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: var(--bg3); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: none;
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card2 {
+    background: var(--card2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  /* TYPOGRAPHY */
+  .heading-xl {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .heading-lg {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 1.5px;
+    line-height: 1;
+  }
+  .heading-md {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .heading-sm {
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .text-orange { color: var(--orange); }
+  .text-green { color: var(--green); }
+  .text-blue { color: var(--blue2); }
+  .text-muted { color: var(--text2); }
+  .text-xs { font-size: 11px; }
+  .text-sm { font-size: 13px; }
+
+  /* BADGE */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .badge-orange { background: rgba(255,107,26,0.15); color: var(--orange); border: 1px solid rgba(255,107,26,0.3); }
+  .badge-green { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.25); }
+  .badge-blue { background: rgba(41,121,255,0.15); color: var(--blue2); border: 1px solid rgba(41,121,255,0.3); }
+  .badge-purple { background: rgba(170,0,255,0.15); color: #cc44ff; border: 1px solid rgba(170,0,255,0.3); }
+
+  /* PROGRESS BAR */
+  .progress-track {
+    background: var(--bg3);
+    border-radius: 20px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--orange), var(--orange2));
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+  .progress-fill.green {
+    background: linear-gradient(90deg, var(--green2), var(--green));
+  }
+  .progress-fill.blue {
+    background: linear-gradient(90deg, var(--blue), var(--blue2));
+  }
+
+  /* AVATAR */
+  .avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .avatar-placeholder {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-family: 'Barlow Condensed', sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  /* HEADER BAR */
+  .header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 8px;
+    flex-shrink: 0;
+  }
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+
+  /* INPUT */
+  .input-field {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    width: 100%;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .input-field:focus { border-color: var(--orange); }
+  .input-field::placeholder { color: var(--text3); }
+  .input-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* ——————————————————————
+     SCREEN: SPLASH
+  —————————————————————— */
+  #screen-splash {
+    background: var(--bg);
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .splash-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,107,26,0.2) 0%, transparent 65%),
+                radial-gradient(ellipse at 80% 80%, rgba(0,230,118,0.1) 0%, transparent 50%);
+  }
+  .splash-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,107,26,0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,107,26,0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .splash-content {
+    position: relative;
+    text-align: center;
+    z-index: 1;
+  }
+  .splash-logo-ring {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 0 40px var(--glow-o);
+    animation: pulse-ring 2s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 20px var(--glow-o); }
+    50% { box-shadow: 0 0 50px var(--glow-o); }
+  }
+  .splash-logo-icon { font-size: 48px; }
+  .splash-tagline {
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .splash-loader {
+    width: 140px;
+    height: 3px;
+    background: var(--bg3);
+    border-radius: 10px;
+    margin: 48px auto 0;
+    overflow: hidden;
+  }
+  .splash-loader-fill {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--orange), var(--orange2));
+    animation: load-splash 2s ease-in-out forwards;
+  }
+  @keyframes load-splash {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  /* ——————————————————————
+     SCREEN: ONBOARDING
+  —————————————————————— */
+  #screen-onboarding {
+    background: var(--bg);
+  }
+  .onboard-header {
+    padding: 20px 20px 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .onboard-slides { flex: 1; overflow: hidden; position: relative; }
+  .onboard-slide {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 32px 0;
+    text-align: center;
+  }
+  .onboard-slide.active { display: flex; }
+  .onboard-illustration {
+    width: 260px;
+    height: 200px;
+    border-radius: 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .onboard-illustration::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, var(--glow-o) 0%, transparent 70%);
+  }
+  .onboard-illust-icon { font-size: 64px; position: relative; }
+  .onboard-illust-sub { font-size: 13px; color: var(--text2); font-weight: 600; margin-top: 8px; position: relative; }
+  .onboard-dots {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .onboard-dot {
+    width: 8px; height: 8px;
+    border-radius: 4px;
+    background: var(--text3);
+    transition: all 0.3s;
+  }
+  .onboard-dot.active {
+    width: 24px;
+    background: var(--orange);
+  }
+  .onboard-footer { padding: 20px; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+
+  /* ——————————————————————
+     SCREEN: LOGIN
+  —————————————————————— */
+  #screen-login {
+    background: var(--bg);
+    overflow-y: auto;
+  }
+  .login-top {
+    padding: 32px 24px 20px;
+    text-align: center;
+    position: relative;
+  }
+  .login-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--orange), var(--orange2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .login-sub { color: var(--text2); font-size: 14px; font-weight: 500; margin-top: 4px; }
+  .login-form { padding: 0 24px; display: flex; flex-direction: column; gap: 16px; }
+  .login-divider { display: flex; align-items: center; gap: 12px; color: var(--text3); font-size: 13px; margin: 8px 0; }
+  .login-divider::before, .login-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    cursor: pointer;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .social-btn:hover { background: var(--bg3); }
+  .role-tabs {
+    display: flex;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 4px;
+    margin: 0 24px 8px;
+  }
+  .role-tab {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text3);
+    cursor: pointer;
+    border-radius: 9px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .role-tab.active {
+    background: var(--orange);
+    color: #fff;
+  }
+
+  /* ——————————————————————
+     SCREEN: SUBSCRIPTION
+  —————————————————————— */
+  #screen-subscription {
+    background: var(--bg);
+    overflow-y: auto;
+  }
+  .sub-header {
+    padding: 20px 24px 0;
+    text-align: center;
+  }
+  .plan-card {
+    background: var(--card);
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .plan-card.selected {
+    border-color: var(--orange);
+    box-shadow: 0 0 30px var(--glow-o);
+  }
+  .plan-card.featured {
+    border-color: var(--orange);
+    background: linear-gradient(135deg, rgba(255,107,26,0.08), var(--card));
+  }
+  .plan-popular {
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--orange);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .plan-price span { font-size: 20px; color: var(--text2); }
+  .plan-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); margin-top: 8px; }
+  .plan-feature .check { color: var(--green); font-size: 12px; }
+
+  /* ——————————————————————
+     SCREEN: HOME / DASHBOARD
+  —————————————————————— */
+  #screen-home .scroll-area { padding: 0 0 16px; }
+  .home-hero {
+    background: linear-gradient(160deg, #1a0f00 0%, var(--bg) 60%);
+    padding: 16px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .home-hero::before {
+    content: '';
+    position: absolute;
+    right: -20px; top: -20px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,26,0.2) 0%, transparent 70%);
+  }
+  .home-greeting { font-size: 13px; color: var(--text2); font-weight: 600; margin-bottom: 2px; }
+  .home-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    color: var(--text);
+  }
+  .home-rank-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .rank-badge {
+    background: linear-gradient(135deg, rgba(255,107,26,0.2), rgba(255,140,66,0.1));
+    border: 2px solid var(--orange);
+    border-radius: 14px;
+    padding: 10px 16px;
+    text-align: center;
+    min-width: 80px;
+  }
+  .rank-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--orange);
+    line-height: 1;
+  }
+  .rank-label { font-size: 10px; font-weight: 700; color: var(--text2); letter-spacing: 0.8px; text-transform: uppercase; }
+  .home-stats-col { flex: 1; }
+  .home-stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .home-stat-val { font-size: 14px; font-weight: 700; color: var(--text); }
+  .home-stat-label { font-size: 11px; color: var(--text2); }
+
+  .home-section { padding: 16px 20px 0; }
+  .live-session-card {
+    background: linear-gradient(135deg, #0d1a3d, #0a1128);
+    border: 1px solid rgba(41,121,255,0.3);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(41,121,255,0.1);
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: blink 1.5s ease-in-out infinite;
+    box-shadow: 0 0 10px var(--green);
+    margin-right: 6px;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .live-label { display: flex; align-items: center; font-size: 11px; font-weight: 800; color: var(--green); letter-spacing: 1px; }
+  .live-title { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  .live-time { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .live-countdown {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--blue2);
+    letter-spacing: 2px;
+    text-align: right;
+    line-height: 1;
+  }
+  .live-countdown-label { font-size: 10px; color: var(--text3); text-align: right; margin-top: 2px; }
+
+  .quick-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .quick-stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: border 0.2s;
+  }
+  .quick-stat-card:hover { border-color: var(--orange); }
+  .quick-stat-icon { font-size: 24px; margin-bottom: 8px; }
+  .quick-stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .quick-stat-label { font-size: 11px; color: var(--text2); font-weight: 600; margin-top: 2px; }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .task-check.done { background: var(--green); border-color: var(--green); }
+  .task-text { flex: 1; font-size: 14px; color: var(--text); font-weight: 500; }
+  .task-text.done { text-decoration: line-through; color: var(--text3); }
+  .task-pts { font-size: 12px; font-weight: 700; color: var(--orange); }
+
+  /* ——————————————————————
+     SCREEN: TRAINING
+  —————————————————————— */
+  #screen-training .scroll-area { padding: 0 0 16px; }
+  .program-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .program-card:hover { transform: translateY(-2px); }
+  .program-thumb {
+    height: 130px;
+    background: var(--bg3);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .program-thumb-icon { font-size: 48px; }
+  .program-thumb-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7));
+  }
+  .program-thumb-badge {
+    position: absolute;
+    bottom: 10px; left: 12px;
+  }
+  .program-info { padding: 12px 14px 14px; }
+  .program-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .program-meta { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+  .program-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  /* ——————————————————————
+     SCREEN: VIDEO PLAYER
+  —————————————————————— */
+  #screen-video .scroll-area { padding: 0; }
+  .video-player {
+    background: #000;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .video-bg { width: 100%; height: 100%; object-fit: cover; }
+  .video-thumb {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a2040, #0a1028);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .video-thumb-icon { font-size: 60px; }
+  .play-btn {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,107,26,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    box-shadow: 0 4px 24px var(--glow-o);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .play-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
+  .video-controls {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    padding: 20px 16px 12px;
+  }
+  .video-progress-track { background: rgba(255,255,255,0.2); border-radius: 10px; height: 3px; margin-bottom: 8px; overflow: hidden; }
+  .video-progress-fill { height: 100%; border-radius: 10px; background: var(--orange); width: 35%; }
+  .video-controls-row { display: flex; align-items: center; justify-content: space-between; }
+  .video-time { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 600; }
+  .drill-list { padding: 16px 20px; }
+  .drill-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .drill-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--card2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text2);
+    flex-shrink: 0;
+  }
+  .drill-num.active { background: var(--orange); color: #fff; }
+  .drill-num.done { background: rgba(0,230,118,0.15); color: var(--green); }
+
+  /* ——————————————————————
+     SCREEN: LEADERBOARD
+  —————————————————————— */
+  #screen-leaderboard .scroll-area { padding: 0 0 16px; }
+  .lb-header-bg {
+    background: linear-gradient(160deg, #1a0f00 0%, var(--bg) 70%);
+    padding: 16px 20px 20px;
+  }
+  .podium-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 0 10px;
+  }
+  .podium-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .podium-avatar {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    color: #fff;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .podium-crown { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 18px; }
+  .podium-rank-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    background: var(--orange);
+    color: #fff;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .podium-name { font-size: 11px; font-weight: 700; color: var(--text); }
+  .podium-pts { font-size: 10px; color: var(--orange); font-weight: 700; }
+  .podium-bar { border-radius: 6px 6px 0 0; }
+  .lb-tabs {
+    display: flex;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 4px;
+    margin: 0 20px 16px;
+  }
+  .lb-tab {
+    flex: 1;
+    padding: 9px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text3);
+    cursor: pointer;
+    border-radius: 9px;
+    transition: all 0.2s;
+  }
+  .lb-tab.active { background: var(--orange); color: #fff; }
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .lb-row:hover { background: var(--card); }
+  .lb-row.me { background: rgba(255,107,26,0.08); border-left: 3px solid var(--orange); }
+  .lb-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .lb-move { font-size: 12px; flex-shrink: 0; }
+  .lb-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .lb-country { font-size: 11px; color: var(--text3); }
+  .lb-pts { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--orange); margin-left: auto; }
+
+  /* ——————————————————————
+     SCREEN: COMMUNITY
+  —————————————————————— */
+  #screen-community .scroll-area { padding: 0 0 16px; }
+  .community-header { padding: 12px 20px; }
+  .stories-row { display: flex; gap: 12px; padding: 0 20px 16px; overflow-x: auto; scrollbar-width: none; }
+  .stories-row::-webkit-scrollbar { display: none; }
+  .story-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0; }
+  .story-ring {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--orange), var(--orange2));
+  }
+  .story-inner {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    background: var(--card2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--text);
+  }
+  .story-name { font-size: 10px; color: var(--text2); font-weight: 600; }
+  .post-card {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  .post-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px 8px; }
+  .post-meta { flex: 1; }
+  .post-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .post-time { font-size: 11px; color: var(--text3); }
+  .post-more { font-size: 20px; color: var(--text3); }
+  .post-body { padding: 0 16px 10px; font-size: 14px; color: var(--text2); line-height: 1.5; }
+  .post-media {
+    background: var(--card2);
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .post-play {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: rgba(255,107,26,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .post-actions { display: flex; align-items: center; gap: 20px; padding: 0 16px 12px; }
+  .post-action { display: flex; align-items: center; gap: 6px; color: var(--text2); font-size: 13px; font-weight: 600; cursor: pointer; }
+  .post-action:hover { color: var(--orange); }
+  .post-action.liked { color: var(--orange); }
+
+  /* ——————————————————————
+     SCREEN: LIVE SESSION
+  —————————————————————— */
+  #screen-live {
+    background: linear-gradient(160deg, #03061a 0%, var(--bg) 50%);
+  }
+  #screen-live .scroll-area { padding: 0 0 16px; }
+  .live-hero {
+    padding: 20px;
+    text-align: center;
+  }
+  .live-big-countdown {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    letter-spacing: 4px;
+    color: var(--text);
+    line-height: 1;
+    position: relative;
+  }
+  .live-big-countdown .colon { color: var(--orange); }
+  .session-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin: 0 20px 12px;
+    cursor: pointer;
+    transition: border 0.2s;
+  }
+  .session-card:hover { border-color: var(--blue2); }
+  .session-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .session-num { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--text3); letter-spacing: 1px; }
+  .session-title { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 4px; }
+  .session-meta { display: flex; gap: 12px; margin-top: 8px; }
+  .session-meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text2); }
+
+  /* ——————————————————————
+     SCREEN: PROGRESS
+  —————————————————————— */
+  #screen-progress .scroll-area { padding: 0 0 20px; }
+  .skill-bar { margin-bottom: 16px; }
+  .skill-bar-top { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .skill-name { font-size: 13px; font-weight: 700; color: var(--text); }
+  .skill-val { font-size: 13px; font-weight: 700; color: var(--orange); }
+  .stat-ring-row { display: flex; justify-content: space-around; padding: 20px 0; }
+  .stat-ring { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .ring-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--text); }
+  .ring-label { font-size: 11px; color: var(--text2); font-weight: 600; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 80px; padding: 0; }
+  .chart-bar { flex: 1; border-radius: 4px 4px 0 0; background: linear-gradient(to top, var(--orange), var(--orange2)); min-height: 4px; }
+  .chart-bar.dim { background: var(--card2); }
+  .chart-labels { display: flex; gap: 6px; padding: 6px 0 0; }
+  .chart-label { flex: 1; text-align: center; font-size: 9px; color: var(--text3); font-weight: 600; }
+
+  /* ——————————————————————
+     SCREEN: NOTIFICATIONS
+  —————————————————————— */
+  #screen-notifications .scroll-area { padding: 0 0 16px; }
+  .notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .notif-item:hover { background: var(--card); }
+  .notif-item.unread { background: rgba(255,107,26,0.04); }
+  .notif-icon {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .notif-body { flex: 1; }
+  .notif-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .notif-desc { font-size: 12px; color: var(--text2); margin-top: 2px; line-height: 1.4; }
+  .notif-time { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .notif-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); flex-shrink: 0; margin-top: 6px; }
+
+  /* ——————————————————————
+     SCREEN: PROFILE
+  —————————————————————— */
+  #screen-profile .scroll-area { padding: 0 0 20px; }
+  .profile-hero {
+    background: linear-gradient(160deg, #1a0f00, var(--bg));
+    padding: 20px 20px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .profile-avatar-ring {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    box-shadow: 0 0 30px var(--glow-o);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--text);
+    background: var(--card2);
+  }
+  .profile-name { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900; color: var(--text); }
+  .profile-role { font-size: 13px; color: var(--text2); margin-top: 2px; }
+  .profile-stats { display: flex; justify-content: space-around; margin-top: 20px; }
+  .profile-stat { text-align: center; }
+  .profile-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--text); }
+  .profile-stat-label { font-size: 11px; color: var(--text2); font-weight: 600; }
+  .achievement-row { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
+  .achievement-row::-webkit-scrollbar { display: none; }
+  .achievement-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 70px;
+    cursor: pointer;
+  }
+  .achievement-badge {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    position: relative;
+  }
+  .achievement-name { font-size: 10px; color: var(--text2); font-weight: 600; text-align: center; }
+  .profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .profile-menu-item:hover { background: var(--card); }
+  .menu-icon { font-size: 20px; width: 24px; text-align: center; }
+  .menu-label { flex: 1; font-size: 15px; font-weight: 600; color: var(--text); }
+  .menu-arrow { color: var(--text3); font-size: 18px; }
+
+  /* ——————————————————————
+     SCREEN: ADMIN DASHBOARD
+  —————————————————————— */
+  #screen-admin {
+    background: var(--bg);
+  }
+  #screen-admin .scroll-area { padding: 0 0 16px; }
+  .admin-header {
+    background: linear-gradient(135deg, #1a0f00, var(--bg2));
+    padding: 12px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 3px; color: var(--text3); }
+  .admin-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; color: var(--text); }
+  .admin-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px 20px; }
+  .admin-stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .admin-stat-icon { font-size: 20px; margin-bottom: 6px; }
+  .admin-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--text); line-height: 1; }
+  .admin-stat-label { font-size: 11px; color: var(--text2); font-weight: 600; }
+  .admin-stat-change { font-size: 11px; color: var(--green); font-weight: 700; margin-top: 4px; }
+  .admin-section { padding: 0 20px 16px; }
+  .admin-action-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .admin-action {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .admin-action:hover { border-color: var(--orange); background: rgba(255,107,26,0.05); }
+  .admin-action-icon { font-size: 24px; margin-bottom: 6px; }
+  .admin-action-label { font-size: 11px; font-weight: 700; color: var(--text2); }
+  .user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .user-row:last-child { border-bottom: none; }
+  .user-row-info { flex: 1; }
+  .user-row-name { font-size: 13px; font-weight: 700; color: var(--text); }
+  .user-row-meta { font-size: 11px; color: var(--text3); }
+  .user-row-status { font-size: 11px; font-weight: 700; }
+  .status-active { color: var(--green); }
+  .status-inactive { color: var(--text3); }
+
+  /* ——————————————————————
+     SCREEN: COACH DASHBOARD
+  —————————————————————— */
+  #screen-coach { background: var(--bg); }
+  #screen-coach .scroll-area { padding: 0 0 16px; }
+
+  /* SELECT ROLE SCREEN */
+  #screen-role-select {
+    background: var(--bg);
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 40px 24px;
+  }
+  .role-select-logo { text-align: center; margin-bottom: 8px; }
+  .role-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .role-card:hover { border-color: var(--orange); box-shadow: 0 0 30px var(--glow-o); }
+  .role-card-icon { font-size: 36px; }
+  .role-card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); }
+  .role-card-desc { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  /* TRANSITIONS */
+  .screen-enter { animation: screenIn 0.3s ease; }
+  @keyframes screenIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* BACK BUTTON */
+  .back-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--text);
+    transition: background 0.2s;
+  }
+  .back-btn:hover { background: var(--card2); }
+
+  /* FLOATING BUTTON */
+  .fab {
+    position: absolute;
+    bottom: 80px; right: 20px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px var(--glow-o);
+    z-index: 10;
+    transition: transform 0.2s;
+  }
+  .fab:hover { transform: scale(1.1); }
+
+  /* TOOLTIP / PILL */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+  }
+
+  /* CONFETTI OVERLAY (dummy) */
+  .confetti-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    display: none;
+  }
+  .confetti-overlay.active { display: block; }
+
+  /* ——— COACH DASHBOARD ——— */
+  .athlete-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .athlete-row:last-child { border-bottom: none; }
+  .athlete-info { flex: 1; }
+  .athlete-name { font-size: 14px; font-weight: 700; color: var(--text); }
+  .athlete-meta { font-size: 11px; color: var(--text3); }
+  .athlete-progress { text-align: right; }
+  .athlete-pct { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--orange); }
+  .athlete-level { font-size: 10px; color: var(--text3); }
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border 0.2s;
+  }
+  .upload-zone:hover { border-color: var(--orange); }
+  .upload-icon { font-size: 40px; margin-bottom: 10px; }
+  .upload-text { font-size: 14px; font-weight: 600; color: var(--text2); }
+  .upload-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* PAYMENT SCREEN */
+  #screen-payment {
+    background: var(--bg);
+    overflow-y: auto;
+  }
+  .payment-section { padding: 0 24px 16px; }
+  .card-input-group {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .card-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-input-row:last-child { border-bottom: none; }
+  .card-input-row input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    flex: 1;
+  }
+  .card-input-row input::placeholder { color: var(--text3); }
+  .card-input-icon { font-size: 20px; }
+
+  /* ——— SHARED ——— */
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .w-full { width: 100%; }
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-8 { margin-bottom: 8px; }
+  .p-20 { padding: 20px; }
+  .px-20 { padding-left: 20px; padding-right: 20px; }
+
+  /* TOGGLE */
+  .toggle { position: relative; width: 44px; height: 24px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--bg3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--text3);
+    top: 3px; left: 3px;
+    transition: 0.2s;
+  }
+  .toggle input:checked + .toggle-slider { background: var(--orange); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); background: #fff; }
+
+  /* WAVE ANIMATION */
+  @keyframes wave { 0%,100%{transform:scaleY(0.5)} 50%{transform:scaleY(1)} }
+
+  svg.ring-chart { transform: rotate(-90deg); }
+</style>
+</head>
+<body>
+
+<div class="phone-shell" id="phone">
+  <div class="notch"></div>
+  <div class="status-bar">
+    <span style="font-size:13px">9:41</span>
+    <div class="status-icons">
+      <span>▲</span>
+      <span>📶</span>
+      <span>🔋</span>
+    </div>
+  </div>
+
+  <!-- ========================
+       SPLASH SCREEN
+  ========================= -->
+  <div class="screen active" id="screen-splash" style="display:flex">
+    <div class="splash-bg"></div>
+    <div class="splash-grid"></div>
+    <div class="splash-content">
+      <div class="splash-logo-ring">
+        <div class="splash-logo-icon">🏏</div>
+      </div>
+      <div class="heading-xl text-orange" style="letter-spacing:6px">POWER LAB</div>
+      <div class="splash-tagline">Cricket Performance Academy</div>
+      <div class="splash-loader">
+        <div class="splash-loader-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================
+       ROLE SELECT SCREEN
+  ========================= -->
+  <div class="screen" id="screen-role-select" style="display:none;flex-direction:column">
+    <div class="role-select-logo">
+      <div class="heading-xl text-orange" style="font-size:36px;letter-spacing:4px">POWER LAB</div>
+      <div class="text-muted" style="font-size:13px;margin-top:4px">SELECT YOUR ROLE</div>
+    </div>
+    <div class="role-card" onclick="goto('screen-login'); setRole('athlete')">
+      <div class="role-card-icon">🏏</div>
+      <div>
+        <div class="role-card-title">ATHLETE / PLAYER</div>
+        <div class="role-card-desc">Train, compete and improve your game</div>
+      </div>
+      <div style="color:var(--text3);font-size:20px">›</div>
+    </div>
+    <div class="role-card" onclick="goto('screen-coach-login'); setRole('coach')">
+      <div class="role-card-icon">🎯</div>
+      <div>
+        <div class="role-card-title">COACH</div>
+        <div class="role-card-desc">Upload content and mentor athletes</div>
+      </div>
+      <div style="color:var(--text3);font-size:20px">›</div>
+    </div>
+    <div class="role-card" onclick="goto('screen-admin'); setRole('admin')" style="border-color:rgba(41,121,255,0.3)">
+      <div class="role-card-icon">⚙️</div>
+      <div>
+        <div class="role-card-title">ADMIN</div>
+        <div class="role-card-desc">Platform management and analytics</div>
+      </div>
+      <div style="color:var(--text3);font-size:20px">›</div>
+    </div>
+  </div>
+
+  <!-- ========================
+       LOGIN SCREEN
+  ========================= -->
+  <div class="screen" id="screen-login" style="display:none;flex-direction:column;overflow-y:auto">
+    <div class="login-top">
+      <div class="login-logo">POWER LAB</div>
+      <div class="login-sub">Welcome back, champion 🏏</div>
+    </div>
+    <div style="padding: 12px 24px 8px;">
+      <div class="role-tabs">
+        <div class="role-tab active" onclick="switchLoginTab(this,'Athlete')">ATHLETE</div>
+        <div class="role-tab" onclick="switchLoginTab(this,'Coach')">COACH</div>
+        <div class="role-tab" onclick="switchLoginTab(this,'Admin')">ADMIN</div>
+      </div>
+    </div>
+    <div class="login-form" style="padding-top:8px">
+      <div>
+        <label class="input-label">Email Address</label>
+        <input class="input-field" type="email" placeholder="you@example.com">
+      </div>
+      <div>
+        <label class="input-label">Password</label>
+        <input class="input-field" type="password" placeholder="••••••••">
+      </div>
+      <div style="text-align:right"><button class="btn-ghost" style="font-size:13px;color:var(--orange)">Forgot password?</button></div>
+      <button class="btn-primary" onclick="handleLogin()">SIGN IN</button>
+      <div class="login-divider">or continue with</div>
+      <div class="social-btn">
+        <span>🔵</span> Continue with Google
+      </div>
+      <div class="social-btn">
+        <span>⚫</span> Continue with Apple
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <span style="color:var(--text3);font-size:14px">New here? </span>
+        <button class="btn-ghost" style="color:var(--orange);font-size:14px" onclick="goto('screen-signup')">Create Account</button>
+      </div>
+    </div>
+    <div style="height:24px"></div>
+  </div>
+
+  <!-- ========================
+       SIGNUP SCREEN
+  ========================= -->
+  <div class="screen" id="screen-signup" style="display:none;flex-direction:column;overflow-y:auto">
+    <div class="header-bar" style="padding-top:16px">
+      <div class="back-btn" onclick="goto('screen-login')">‹</div>
+      <div class="header-title">CREATE ACCOUNT</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="login-form" style="padding:16px 24px;gap:14px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label class="input-label">First Name</label>
+          <input class="input-field" placeholder="Jake">
+        </div>
+        <div>
+          <label class="input-label">Last Name</label>
+          <input class="input-field" placeholder="Mitchell">
+        </div>
+      </div>
+      <div>
+        <label class="input-label">Email Address</label>
+        <input class="input-field" type="email" placeholder="you@example.com">
+      </div>
+      <div>
+        <label class="input-label">Password</label>
+        <input class="input-field" type="password" placeholder="Min. 8 characters">
+      </div>
+      <div>
+        <label class="input-label">Country</label>
+        <input class="input-field" placeholder="Australia 🇦🇺">
+      </div>
+      <div>
+        <label class="input-label">Playing Role</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px">
+          <div class="role-tab" style="background:var(--orange);color:#fff;border-radius:10px;padding:10px;cursor:pointer;font-size:12px;font-weight:700;text-align:center">🏏 Batsman</div>
+          <div class="role-tab" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;font-size:12px;font-weight:700;text-align:center;color:var(--text2)">🎯 Bowler</div>
+          <div class="role-tab" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;font-size:12px;font-weight:700;text-align:center;color:var(--text2)">🧤 WK</div>
+          <div class="role-tab" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;font-size:12px;font-weight:700;text-align:center;color:var(--text2)">⭐ All-Rounder</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goto('screen-onboarding')" style="margin-top:8px">CREATE ACCOUNT</button>
+      <div style="text-align:center">
+        <span style="color:var(--text3);font-size:12px">By creating an account you agree to our </span>
+        <button class="btn-ghost" style="color:var(--text2);font-size:12px">Terms & Privacy</button>
+      </div>
+    </div>
+    <div style="height:24px"></div>
+  </div>
+
+  <!-- ========================
+       ONBOARDING SCREEN
+  ========================= -->
+  <div class="screen" id="screen-onboarding" style="display:none;flex-direction:column">
+    <div class="onboard-header">
+      <button class="btn-ghost" onclick="goto('screen-subscription')">Skip</button>
+    </div>
+    <div class="onboard-slides" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 32px 0">
+      <!-- Slide 1 -->
+      <div class="onboard-slide active" id="ob-slide-0">
+        <div class="onboard-illustration">
+          <div class="onboard-illust-icon">🎥</div>
+          <div class="onboard-illust-sub">Structured Video Programs</div>
+        </div>
+        <div class="heading-md" style="text-align:center;margin-bottom:10px">Train Like a <span class="text-orange">Pro</span></div>
+        <div style="font-size:14px;color:var(--text2);text-align:center;line-height:1.6">Access 200+ expert-crafted video drills built by elite coaches. Progress through 4–8 week structured programs at your own pace.</div>
+      </div>
+      <!-- Slide 2 -->
+      <div class="onboard-slide" id="ob-slide-1">
+        <div class="onboard-illustration">
+          <div class="onboard-illust-icon">🏆</div>
+          <div class="onboard-illust-sub">Global Leaderboard System</div>
+        </div>
+        <div class="heading-md" style="text-align:center;margin-bottom:10px">Compete <span class="text-orange">Globally</span></div>
+        <div style="font-size:14px;color:var(--text2);text-align:center;line-height:1.6">Earn points for every drill completed. Rise through the global leaderboard and compete weekly against players worldwide.</div>
+      </div>
+      <!-- Slide 3 -->
+      <div class="onboard-slide" id="ob-slide-2">
+        <div class="onboard-illustration">
+          <div class="onboard-illust-icon">📞</div>
+          <div class="onboard-illust-sub">Weekly Live Coaching</div>
+        </div>
+        <div class="heading-md" style="text-align:center;margin-bottom:10px">Learn <span class="text-orange">Live</span></div>
+        <div style="font-size:14px;color:var(--text2);text-align:center;line-height:1.6">Join weekly live Zoom coaching sessions with Keiran and the team. Ask questions, get feedback, improve faster.</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:20px 0 0">
+      <div class="onboard-dots">
+        <div class="onboard-dot active" id="dot-0"></div>
+        <div class="onboard-dot" id="dot-1"></div>
+        <div class="onboard-dot" id="dot-2"></div>
+      </div>
+    </div>
+    <div class="onboard-footer">
+      <button class="btn-primary" id="ob-next-btn" onclick="nextOnboardSlide()">NEXT →</button>
+    </div>
+  </div>
+
+  <!-- ========================
+       SUBSCRIPTION SCREEN
+  ========================= -->
+  <div class="screen" id="screen-subscription" style="display:none;flex-direction:column;overflow-y:auto">
+    <div class="header-bar" style="padding-top:16px">
+      <div class="back-btn" onclick="goto('screen-onboarding')">‹</div>
+      <div class="header-title">CHOOSE PLAN</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="sub-header">
+      <div style="font-size:14px;color:var(--text2)">Join <strong style="color:var(--text)">4,200+</strong> athletes worldwide</div>
+    </div>
+    <div style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+      <!-- Monthly -->
+      <div class="plan-card selected" id="plan-monthly" onclick="selectPlan('monthly')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="badge badge-orange" style="margin-bottom:8px">MONTHLY</div>
+            <div class="plan-price">$29<span>/mo</span></div>
+          </div>
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff" id="check-monthly">✓</div>
+        </div>
+        <div class="divider"></div>
+        <div class="plan-feature"><span class="check">✓</span> All training programs</div>
+        <div class="plan-feature"><span class="check">✓</span> Weekly live coaching sessions</div>
+        <div class="plan-feature"><span class="check">✓</span> Global leaderboard access</div>
+        <div class="plan-feature"><span class="check">✓</span> Power Hitters Lounge community</div>
+      </div>
+      <!-- Annual -->
+      <div class="plan-card featured" id="plan-annual" onclick="selectPlan('annual')">
+        <div class="plan-popular">BEST VALUE</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="badge badge-green" style="margin-bottom:8px">ANNUAL — SAVE 30%</div>
+            <div class="plan-price">$19<span>/mo</span></div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Billed $228/year</div>
+          </div>
+          <div style="width:24px;height:24px;border-radius:50%;background:transparent;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent" id="check-annual">✓</div>
+        </div>
+        <div class="divider"></div>
+        <div class="plan-feature"><span class="check">✓</span> Everything in Monthly</div>
+        <div class="plan-feature"><span class="check">✓</span> Priority feedback on videos</div>
+        <div class="plan-feature"><span class="check">✓</span> Exclusive annual challenges</div>
+        <div class="plan-feature"><span class="check">✓</span> 1-on-1 session per quarter</div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--text3)">Cancel anytime · Secure checkout · 7-day free trial</div>
+      <button class="btn-primary" onclick="goto('screen-payment')" style="margin-top:4px">START FREE TRIAL →</button>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- ========================
+       PAYMENT SCREEN
+  ========================= -->
+  <div class="screen" id="screen-payment" style="display:none;flex-direction:column;overflow-y:auto">
+    <div class="header-bar" style="padding-top:16px">
+      <div class="back-btn" onclick="goto('screen-subscription')">‹</div>
+      <div class="header-title">PAYMENT</div>
+      <div style="width:36px;font-size:18px;text-align:right">🔒</div>
+    </div>
+    <div class="payment-section">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:13px;color:var(--text2)">POWER LAB Monthly</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text)">$29<span style="font-size:16px;color:var(--text2)">/month</span></div>
+        </div>
+        <div class="badge badge-green">7-DAY TRIAL</div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--text2);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px">Card Details</div>
+      <div class="card-input-group">
+        <div class="card-input-row">
+          <span class="card-input-icon">💳</span>
+          <input placeholder="Card number" style="font-size:15px;letter-spacing:2px">
+          <span style="font-size:18px;color:var(--text3)">Visa</span>
+        </div>
+        <div class="card-input-row" style="display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0">
+          <div style="padding:14px 16px;border-right:1px solid var(--border);display:flex;gap:8px;align-items:center">
+            <span style="font-size:16px">📅</span>
+            <input placeholder="MM / YY" style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'Barlow',sans-serif;font-size:14px">
+          </div>
+          <div style="padding:14px 16px;display:flex;gap:8px;align-items:center">
+            <span style="font-size:16px">🔐</span>
+            <input placeholder="CVV" style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'Barlow',sans-serif;font-size:14px">
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <label class="input-label">Name on card</label>
+        <input class="input-field" placeholder="Jake Mitchell">
+      </div>
+
+      <div style="margin-top:16px;background:var(--card);border-radius:var(--radius);padding:14px;border:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:8px">
+          <span>Monthly subscription</span><span>$29.00</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--green);margin-bottom:8px">
+          <span>7-day trial discount</span><span>-$29.00</span>
+        </div>
+        <div class="divider" style="margin:10px 0"></div>
+        <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:var(--text)">
+          <span>Due today</span><span class="text-green">$0.00</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="goto('screen-home');showBottomNav()" style="margin-top:20px">
+        🔒 START FREE TRIAL
+      </button>
+      <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:10px">Your card won't be charged until day 7. Cancel anytime.</div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ========================
+       HOME SCREEN
+  ========================= -->
+  <div class="screen" id="screen-home" style="display:none;flex-direction:column">
+    <div class="home-hero">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="home-greeting">Good morning 👋</div>
+          <div class="home-name">JAKE MITCHELL</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="position:relative;cursor:pointer" onclick="gotoTab('screen-notifications','notif')">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px">🔔</div>
+            <div style="position:absolute;top:0;right:0;width:14px;height:14px;background:var(--orange);border-radius:50%;border:2px solid var(--bg);font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800">3</div>
+          </div>
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:#fff;cursor:pointer" onclick="gotoTab('screen-profile','profile')">JM</div>
+        </div>
+      </div>
+      <div class="home-rank-row">
+        <div class="rank-badge">
+          <div class="rank-num">#12</div>
+          <div class="rank-label">Global Rank</div>
+        </div>
+        <div class="home-stats-col">
+          <div class="home-stat-row">
+            <div>
+              <div class="home-stat-label">This Week</div>
+              <div class="home-stat-val">+4 ↑</div>
+            </div>
+            <div>
+              <div class="home-stat-label">Total Points</div>
+              <div class="home-stat-val text-orange">4,820</div>
+            </div>
+          </div>
+          <div class="progress-track" style="margin-top:4px">
+            <div class="progress-fill" style="width:72%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px">
+            <span style="font-size:10px;color:var(--text3)">72% weekly goal</span>
+            <span style="font-size:10px;color:var(--orange);font-weight:700">4,820 / 6,700 pts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-area">
+      <!-- Live Session Card -->
+      <div class="home-section" style="padding-top:16px">
+        <div class="live-session-card" onclick="gotoTab('screen-live','live')">
+          <div>
+            <div class="live-label"><div class="live-dot"></div> UPCOMING SESSION</div>
+            <div class="live-title">Advanced Batting Masterclass</div>
+            <div class="live-time">📅 Today at 6:00 PM AEST · Coach Keiran</div>
+          </div>
+          <div>
+            <div class="live-countdown" id="live-timer">01:42:30</div>
+            <div class="live-countdown-label">Until session</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="home-section" style="padding-top:16px">
+        <div class="section-header">
+          <div class="heading-sm">YOUR STATS</div>
+        </div>
+        <div class="quick-stats">
+          <div class="quick-stat-card" onclick="gotoTab('screen-progress','progress')">
+            <div class="quick-stat-icon">🎯</div>
+            <div class="quick-stat-val">24</div>
+            <div class="quick-stat-label">Drills Done</div>
+          </div>
+          <div class="quick-stat-card" onclick="gotoTab('screen-leaderboard','leaderboard')">
+            <div class="quick-stat-icon">🔥</div>
+            <div class="quick-stat-val">7</div>
+            <div class="quick-stat-label">Day Streak</div>
+          </div>
+          <div class="quick-stat-card" onclick="gotoTab('screen-training','training')">
+            <div class="quick-stat-icon">📹</div>
+            <div class="quick-stat-val">3</div>
+            <div class="quick-stat-label">Programs</div>
+          </div>
+          <div class="quick-stat-card" onclick="gotoTab('screen-leaderboard','leaderboard')">
+            <div class="quick-stat-icon">🏆</div>
+            <div class="quick-stat-val">#12</div>
+            <div class="quick-stat-label">Global Rank</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Continue Training -->
+      <div class="home-section" style="padding-top:16px">
+        <div class="section-header">
+          <div class="heading-sm">CONTINUE TRAINING</div>
+          <button class="btn-ghost" onclick="gotoTab('screen-training','training')" style="color:var(--orange);font-size:13px">See all</button>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="goto('screen-video')">
+          <div style="padding:14px 14px 8px;display:flex;align-items:center;gap:12px">
+            <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#1a2040,#0a1028);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🏏</div>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700;color:var(--text)">Power Batting — Week 3</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:2px">Module 3 · Drill 4 of 8</div>
+            </div>
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0">▶</div>
+          </div>
+          <div style="padding:0 14px 14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span style="font-size:11px;color:var(--text3)">Week Progress</span>
+              <span style="font-size:11px;color:var(--orange);font-weight:700">37%</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill" style="width:37%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Tasks -->
+      <div class="home-section" style="padding-top:16px;padding-bottom:0">
+        <div class="section-header">
+          <div class="heading-sm">WEEKLY TASKS</div>
+          <div class="badge badge-orange">3/5 done</div>
+        </div>
+        <div class="card" style="padding:4px 14px">
+          <div class="task-item">
+            <div class="task-check done" onclick="toggleTask(this)">✓</div>
+            <div class="task-text done">Complete Footwork Module</div>
+            <div class="task-pts">+150 pts</div>
+          </div>
+          <div class="task-item">
+            <div class="task-check done" onclick="toggleTask(this)">✓</div>
+            <div class="task-text done">Watch 3 technique videos</div>
+            <div class="task-pts">+100 pts</div>
+          </div>
+          <div class="task-item">
+            <div class="task-check done" onclick="toggleTask(this)">✓</div>
+            <div class="task-text done">Post training video to Lounge</div>
+            <div class="task-pts">+200 pts</div>
+          </div>
+          <div class="task-item">
+            <div class="task-check" onclick="toggleTask(this)"></div>
+            <div class="task-text">Join Live Coaching Session</div>
+            <div class="task-pts">+250 pts</div>
+          </div>
+          <div class="task-item">
+            <div class="task-check" onclick="toggleTask(this)"></div>
+            <div class="task-text">Complete Reaction Drill x5</div>
+            <div class="task-pts">+180 pts</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:20px"></div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav" id="bottom-nav">
+      <div class="nav-item active" onclick="gotoTab('screen-home','home')" id="nav-home">
+        <div class="nav-icon">🏠</div>
+        <div class="nav-label">Home</div>
+      </div>
+      <div class="nav-item" onclick="gotoTab('screen-training','training')" id="nav-training">
+        <div class="nav-icon">🎯</div>
+        <div class="nav-label">Train</div>
+      </div>
+      <div class="nav-item" onclick="gotoTab('screen-leaderboard','leaderboard')" id="nav-leaderboard">
+        <div class="nav-icon">🏆</div>
+        <div class="nav-label">Ranks</div>
+      </div>
+      <div class="nav-item" onclick="gotoTab('screen-community','community')" id="nav-community">
+        <div class="nav-icon" style="position:relative">💬<div class="nav-dot"></div></div>
+        <div class="nav-label">Lounge</div>
+      </div>
+      <div class="nav-item" onclick="gotoTab('screen-profile','profile')" id="nav-profile">
+        <div class="nav-icon">👤</div>
+        <div class="nav-label">Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================
+       TRAINING SCREEN
+  ========================= -->
+  <div class="screen" id="screen-training" style="display:none;flex-direction:column">
+    <div class="header-bar">
+      <div class="header-title">TRAINING</div>
+      <div style="display:flex;gap:8px">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer">🔍</div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer">⚙️</div>
+      </div>
+    </div>
+    <!-- Filter tabs -->
+    <div style="padding:0 20px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none">
+      <div class="badge badge-orange" style="cursor:pointer;white-space:nowrap">All Programs</div>
+      <div class="pill" style="cursor:pointer;white-space:nowrap">Batting</div>
+      <div class="pill" style="cursor:pointer;white-space:nowrap">Bowling</div>
+      <div class="pill" style="cursor:pointer;white-space:nowrap">Fielding</div>
+      <div class="pill" style="cursor:pointer;white-space:nowrap">Mental</div>
+    </div>
+    <div class="scroll-area" style="padding:0 20px 16px">
+      <!-- In Progress -->
+      <div class="section-header" style="margin-bottom:12px">
+        <div class="heading-sm">IN PROGRESS</div>
+        <div class="badge badge-orange">2 active</div>
+      </div>
+      <div class="program-card" style="margin-bottom:12px;cursor:pointer" onclick="goto('screen-video')">
+        <div class="program-thumb" style="background:linear-gradient(135deg,#1a2040,#0d1425)">
+          <div class="program-thumb-icon">🏏</div>
+          <div class="program-thumb-overlay"></div>
+          <div class="program-thumb-badge"><div class="badge badge-orange">Week 3 / 8</div></div>
+          <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);border-radius:6px;padding:3px 8px;font-size:11px;color:#fff;font-weight:700">37%</div>
+        </div>
+        <div class="program-info">
+          <div class="program-title">⚡ Power Batting Mastery</div>
+          <div class="program-meta">8 Weeks · 48 Drills · Coach Keiran</div>
+          <div class="progress-track"><div class="progress-fill" style="width:37%"></div></div>
+        </div>
+      </div>
+      <div class="program-card" style="margin-bottom:20px;cursor:pointer" onclick="goto('screen-video')">
+        <div class="program-thumb" style="background:linear-gradient(135deg,#1a1000,#0a0800)">
+          <div class="program-thumb-icon">🎯</div>
+          <div class="program-thumb-overlay"></div>
+          <div class="program-thumb-badge"><div class="badge badge-green">Week 2 / 6</div></div>
+          <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);border-radius:6px;padding:3px 8px;font-size:11px;color:#fff;font-weight:700">28%</div>
+        </div>
+        <div class="program-info">
+          <div class="program-title">🎯 Elite Fielding System</div>
+          <div class="program-meta">6 Weeks · 36 Drills · Coach Sarah</div>
+          <div class="progress-track"><div class="progress-fill green" style="width:28%"></div></div>
+        </div>
+      </div>
+
+      <!-- Browse All -->
+      <div class="section-header" style="margin-bottom:12px">
+        <div class="heading-sm">BROWSE ALL</div>
+      </div>
+      <div class="program-grid">
+        <div class="program-card" onclick="goto('screen-video')" style="cursor:pointer">
+          <div class="program-thumb" style="height:90px;background:linear-gradient(135deg,#001a10,#00100a)">
+            <div class="program-thumb-icon" style="font-size:32px">🏃</div>
+            <div class="program-thumb-overlay"></div>
+            <div class="program-thumb-badge"><div class="badge badge-blue" style="font-size:9px">4 Weeks</div></div>
+          </div>
+          <div class="program-info" style="padding:8px 10px 10px">
+            <div class="program-title" style="font-size:13px">Speed & Agility</div>
+            <div class="program-meta" style="font-size:10px">24 Drills</div>
+          </div>
+        </div>
+        <div class="program-card" onclick="goto('screen-video')" style="cursor:pointer">
+          <div class="program-thumb" style="height:90px;background:linear-gradient(135deg,#1a001a,#0d000d)">
+            <div class="program-thumb-icon" style="font-size:32px">🧠</div>
+            <div class="program-thumb-overlay"></div>
+            <div class="program-thumb-badge"><div class="badge badge-purple" style="font-size:9px">6 Weeks</div></div>
+          </div>
+          <div class="program-info" style="padding:8px 10px 10px">
+            <div class="program-title" style="font-size:13px">Mental Toughness</div>
+            <div class="program-meta" style="font-size:10px">30 Drills</div>
+          </div>
+        </div>
+        <div class="program-card" onclick="goto('screen-video')" style="cursor:pointer">
+          <div class="program-thumb" style="height:90px;background:linear-gradient(135deg,#1a1000,#0d0800)">
+            <div class="program-thumb-icon" style="font-size:32px">💪</div>
+            <div class="program-thumb-overlay"></div>
+            <div class="program-thumb-badge"><div class="badge badge-orange" style="font-size:9px">8 Weeks</div></div>
+          </div>
+          <div class="program-info" style="padding:8px 10px 10px">
+            <div class="program-title" style="font-size:13px">Strength & Power</div>
+            <div class="program-meta" style="font-size:10px">48 Drills</div>
+          </div>
+        </div>
+        <div class="program-card" onclick="goto('screen-video')" style="cursor:pointer">
+          <div class="program-thumb" style="height:90px;background:linear-gradient(135deg,#001a1a,#000d0d)">
+            <div class="program-thumb-icon" style="font-size:32px">🎾</div>
+            <div class="program-thumb-overlay"></div>
+            <div class="program-thumb-badge"><div class="badge badge-green" style="font-size:9px">5 Weeks</div></div>
+          </div>
+          <div class="program-info" style="padding:8px 10px 10px">
+            <div class="program-title" style="font-size:13px">Wicket Keeping</div>
+            <div class="program-meta" style="font-size:10px">32 Drills</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav" id="bottom-nav-training">
+      <div class="nav-item" onclick="gotoTab('screen-home','home')" id="nav-home-t"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item active" id="nav-training-t"><div class="nav-icon">🎯</div><div class="nav-label">Train</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-leaderboard','leaderboard')"><div class="nav-icon">🏆</div><div class="nav-label">Ranks</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-community','community')"><div class="nav-icon">💬</div><div class="nav-label">Lounge</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-profile','profile')"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       VIDEO / DRILL SCREEN
+  ========================= -->
+  <div class="screen" id="screen-video" style="display:none;flex-direction:column">
+    <div style="position:relative;flex-shrink:0">
+      <div class="back-btn" onclick="goBack()" style="position:absolute;top:12px;left:12px;z-index:10">‹</div>
+      <div class="video-player" onclick="togglePlay()">
+        <div class="video-thumb">
+          <div class="video-thumb-icon">🏏</div>
+          <div style="font-size:13px;color:var(--text2);font-weight:600">Power Drive — Drill 4</div>
+        </div>
+        <div class="play-btn" id="play-btn">▶</div>
+        <div class="video-controls">
+          <div class="video-progress-track"><div class="video-progress-fill" id="video-prog"></div></div>
+          <div class="video-controls-row">
+            <div class="video-time">2:14 / 6:35</div>
+            <div style="display:flex;gap:12px">
+              <span style="color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer">⏩</span>
+              <span style="color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer">⛶</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-area">
+      <div style="padding:14px 16px 0">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+          <div>
+            <div class="badge badge-orange" style="margin-bottom:6px">WEEK 3 · DRILL 4</div>
+            <div style="font-size:18px;font-weight:800;color:var(--text)">Power Drive Technique</div>
+            <div style="font-size:13px;color:var(--text2);margin-top:4px">Coach Keiran · 6:35 min</div>
+          </div>
+          <div style="background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.25);border-radius:12px;padding:8px 14px;text-align:center;cursor:pointer" onclick="markDone(this)">
+            <div style="font-size:20px">✅</div>
+            <div style="font-size:10px;color:var(--green);font-weight:700;margin-top:2px">+150 PTS</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:var(--text2);line-height:1.6">Master the fundamentals of the cover drive with power and precision. Focus on weight transfer, head position and timing.</div>
+
+        <!-- Drill List -->
+        <div class="divider"></div>
+        <div class="section-header"><div class="heading-sm">MODULE DRILLS</div></div>
+      </div>
+      <div class="drill-list" style="padding-top:0">
+        <div class="drill-item"><div class="drill-num done">✓</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text3);text-decoration:line-through">1. Stance & Setup</div><div style="font-size:11px;color:var(--text3)">4:20 min</div></div><div class="badge badge-green" style="font-size:9px">DONE</div></div>
+        <div class="drill-item"><div class="drill-num done">✓</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text3);text-decoration:line-through">2. Backswing Mechanics</div><div style="font-size:11px;color:var(--text3)">5:10 min</div></div><div class="badge badge-green" style="font-size:9px">DONE</div></div>
+        <div class="drill-item"><div class="drill-num done">✓</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text3);text-decoration:line-through">3. Weight Transfer</div><div style="font-size:11px;color:var(--text3)">7:05 min</div></div><div class="badge badge-green" style="font-size:9px">DONE</div></div>
+        <div class="drill-item"><div class="drill-num active">4</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text)">4. Power Drive Technique</div><div style="font-size:11px;color:var(--text2)">6:35 min</div></div><div class="badge badge-orange" style="font-size:9px">CURRENT</div></div>
+        <div class="drill-item"><div class="drill-num">5</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text2)">5. Straight Drive Variation</div><div style="font-size:11px;color:var(--text3)">5:45 min</div></div><div style="font-size:11px;color:var(--text3)">🔒</div></div>
+        <div class="drill-item"><div class="drill-num">6</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text2)">6. Sweep Shot Mastery</div><div style="font-size:11px;color:var(--text3)">8:20 min</div></div><div style="font-size:11px;color:var(--text3)">🔒</div></div>
+        <div class="drill-item"><div class="drill-num">7</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text2)">7. Pull Shot Drill</div><div style="font-size:11px;color:var(--text3)">6:50 min</div></div><div style="font-size:11px;color:var(--text3)">🔒</div></div>
+        <div class="drill-item"><div class="drill-num">8</div><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text2)">8. Match Scenario Practice</div><div style="font-size:11px;color:var(--text3)">10:00 min</div></div><div style="font-size:11px;color:var(--text3)">🔒</div></div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       LEADERBOARD SCREEN
+  ========================= -->
+  <div class="screen" id="screen-leaderboard" style="display:none;flex-direction:column">
+    <div class="lb-header-bg">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="header-title">🏆 LEADERBOARD</div>
+        <div class="badge badge-orange">Resets in 3d 14h</div>
+      </div>
+      <!-- Podium -->
+      <div class="podium-row">
+        <!-- 2nd -->
+        <div class="podium-item" style="margin-bottom:0">
+          <div class="podium-avatar" style="width:56px;height:56px;font-size:22px;background:linear-gradient(135deg,#607d8b,#455a64)">SA</div>
+          <div class="podium-name">Sam A.</div>
+          <div class="podium-pts">4,240 pts</div>
+          <div class="podium-bar" style="width:70px;height:50px;background:linear-gradient(to top,#607d8b,#546e7a)">
+            <div style="text-align:center;padding-top:6px;font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff">2</div>
+          </div>
+        </div>
+        <!-- 1st -->
+        <div class="podium-item" style="margin-bottom:0">
+          <div class="podium-avatar" style="width:72px;height:72px;font-size:28px;background:linear-gradient(135deg,var(--orange),var(--orange2));position:relative">
+            RK
+            <div class="podium-crown">👑</div>
+          </div>
+          <div class="podium-name" style="font-size:13px">Ravi K.</div>
+          <div class="podium-pts" style="font-size:12px">5,620 pts</div>
+          <div class="podium-bar" style="width:80px;height:70px;background:linear-gradient(to top,var(--orange),var(--orange2))">
+            <div style="text-align:center;padding-top:10px;font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff">1</div>
+          </div>
+        </div>
+        <!-- 3rd -->
+        <div class="podium-item" style="margin-bottom:0">
+          <div class="podium-avatar" style="width:52px;height:52px;font-size:20px;background:linear-gradient(135deg,#8d6e63,#6d4c41)">LT</div>
+          <div class="podium-name">Liam T.</div>
+          <div class="podium-pts">3,980 pts</div>
+          <div class="podium-bar" style="width:70px;height:36px;background:linear-gradient(to top,#8d6e63,#795548)">
+            <div style="text-align:center;padding-top:2px;font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff">3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lb-tabs">
+      <div class="lb-tab active" onclick="switchLbTab(this,'global')">GLOBAL</div>
+      <div class="lb-tab" onclick="switchLbTab(this,'weekly')">THIS WEEK</div>
+      <div class="lb-tab" onclick="switchLbTab(this,'country')">MY COUNTRY</div>
+    </div>
+
+    <div class="scroll-area">
+      <!-- Leaderboard rows -->
+      <div class="lb-row"><div class="lb-rank" style="color:var(--orange)">1</div><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#fff;font-size:15px">RK</div><div><div class="lb-name">Ravi Kumar</div><div class="lb-country">🇮🇳 India</div></div><div class="lb-move" style="color:var(--text3)">→</div><div class="lb-pts">5,620</div></div>
+      <div class="lb-row"><div class="lb-rank" style="color:#90a4ae">2</div><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#607d8b,#455a64);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#fff;font-size:15px">SA</div><div><div class="lb-name">Sam Anderson</div><div class="lb-country">🇦🇺 Australia</div></div><div class="lb-move text-green">↑2</div><div class="lb-pts">4,240</div></div>
+      <div class="lb-row"><div class="lb-rank" style="color:#a1887f">3</div><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#8d6e63,#6d4c41);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#fff;font-size:15px">LT</div><div><div class="lb-name">Liam Thompson</div><div class="lb-country">🇬🇧 England</div></div><div class="lb-move" style="color:#f44336">↓1</div><div class="lb-pts">3,980</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">4</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">MH</div><div><div class="lb-name">Mohammed Hassan</div><div class="lb-country">🇵🇰 Pakistan</div></div><div class="lb-move text-green">↑5</div><div class="lb-pts">3,760</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">5</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">JD</div><div><div class="lb-name">Jordan Davis</div><div class="lb-country">🇿🇦 South Africa</div></div><div class="lb-move" style="color:var(--text3)">→</div><div class="lb-pts">3,540</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">6</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">PB</div><div><div class="lb-name">Priya Bhatt</div><div class="lb-country">🇮🇳 India</div></div><div class="lb-move text-green">↑3</div><div class="lb-pts">3,320</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">7</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">TN</div><div><div class="lb-name">Tom Norton</div><div class="lb-country">🇳🇿 New Zealand</div></div><div class="lb-move" style="color:#f44336">↓2</div><div class="lb-pts">3,190</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">8</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">AC</div><div><div class="lb-name">Arjun Chandra</div><div class="lb-country">🇱🇰 Sri Lanka</div></div><div class="lb-move text-green">↑1</div><div class="lb-pts">3,050</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">9</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">KS</div><div><div class="lb-name">Kemal Sahin</div><div class="lb-country">🇦🇪 UAE</div></div><div class="lb-move" style="color:var(--text3)">→</div><div class="lb-pts">2,980</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">10</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">BW</div><div><div class="lb-name">Ben Wilson</div><div class="lb-country">🇦🇺 Australia</div></div><div class="lb-move" style="color:#f44336">↓3</div><div class="lb-pts">2,820</div></div>
+      <div class="lb-row"><div class="lb-rank text-muted">11</div><div style="width:36px;height:36px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:var(--text);font-size:15px">FL</div><div><div class="lb-name">Frankie Lee</div><div class="lb-country">🇬🇧 England</div></div><div class="lb-move text-green">↑2</div><div class="lb-pts">2,710</div></div>
+      <div class="lb-row me"><div class="lb-rank text-orange">12</div><div style="width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#fff;font-size:15px">JM</div><div><div class="lb-name" style="color:var(--orange)">Jake Mitchell (You)</div><div class="lb-country">🇦🇺 Australia</div></div><div class="lb-move text-green">↑4</div><div class="lb-pts">4,820</div></div>
+      <div style="height:16px"></div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoTab('screen-home','home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-training','training')"><div class="nav-icon">🎯</div><div class="nav-label">Train</div></div>
+      <div class="nav-item active"><div class="nav-icon">🏆</div><div class="nav-label">Ranks</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-community','community')"><div class="nav-icon">💬</div><div class="nav-label">Lounge</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-profile','profile')"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       COMMUNITY SCREEN
+  ========================= -->
+  <div class="screen" id="screen-community" style="display:none;flex-direction:column">
+    <div class="community-header">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px">POWER HITTERS</div>
+          <div class="header-title">THE LOUNGE</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;cursor:pointer">🔍</div>
+          <div style="background:var(--orange);border-radius:10px;padding:6px 12px;font-size:13px;cursor:pointer" onclick="goto('screen-new-post')">✏️</div>
+        </div>
+      </div>
+    </div>
+    <!-- Stories -->
+    <div class="stories-row">
+      <div class="story-item">
+        <div style="width:56px;height:56px;border-radius:50%;border:3px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;color:var(--orange)">+</div>
+        <div class="story-name">Your Story</div>
+      </div>
+      <div class="story-item"><div class="story-ring"><div class="story-inner">RK</div></div><div class="story-name">Ravi K.</div></div>
+      <div class="story-item"><div class="story-ring"><div class="story-inner">SA</div></div><div class="story-name">Sam A.</div></div>
+      <div class="story-item"><div class="story-ring"><div class="story-inner">MH</div></div><div class="story-name">Mohammed</div></div>
+      <div class="story-item"><div class="story-ring" style="background:linear-gradient(135deg,var(--blue),var(--blue2))"><div class="story-inner">LT</div></div><div class="story-name">Liam T.</div></div>
+      <div class="story-item"><div class="story-ring" style="background:linear-gradient(135deg,var(--green2),var(--green))"><div class="story-inner">PB</div></div><div class="story-name">Priya B.</div></div>
+    </div>
+
+    <div class="scroll-area">
+      <!-- Post 1 -->
+      <div class="post-card">
+        <div class="post-header">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#fff;font-size:17px">RK</div>
+          <div class="post-meta">
+            <div class="post-name">Ravi Kumar <span class="badge badge-orange" style="font-size:9px;margin-left:4px">#1</span></div>
+            <div class="post-time">2 hours ago · Mumbai, India</div>
+          </div>
+          <div class="post-more">⋯</div>
+        </div>
+        <div class="post-body">Just finished Week 4 of the Power Batting program 🔥 The cover drive drill is 🤌 My timing is on another level now. Big thanks Coach Keiran! #PowerLab #CricketGrind</div>
+        <div class="post-media">
+          <div style="font-size:48px">🏏</div>
+          <div class="post-play">▶</div>
+        </div>
+        <div class="post-actions">
+          <div class="post-action liked" onclick="toggleLike(this)">❤️ <span>247</span></div>
+          <div class="post-action" onclick="goto('screen-post-detail')">💬 <span>38</span></div>
+          <div class="post-action">↗️ <span>Share</span></div>
+          <div style="margin-left:auto"><div class="badge badge-green" style="font-size:9px">+200 PTS</div></div>
+        </div>
+      </div>
+
+      <!-- Post 2 -->
+      <div class="post-card">
+        <div class="post-header">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#607d8b,#455a64);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#fff;font-size:17px">SA</div>
+          <div class="post-meta">
+            <div class="post-name">Sam Anderson <span class="badge badge-blue" style="font-size:9px;margin-left:4px">COACH PICK</span></div>
+            <div class="post-time">5 hours ago · Sydney, Australia</div>
+          </div>
+          <div class="post-more">⋯</div>
+        </div>
+        <div class="post-body">7-day streak unlocked! 💪 Consistency is the real secret to leveling up. Who else is on a streak right now? Drop your numbers below 👇</div>
+        <div class="post-actions">
+          <div class="post-action" onclick="toggleLike(this)">🤍 <span>183</span></div>
+          <div class="post-action" onclick="goto('screen-post-detail')">💬 <span>52</span></div>
+          <div class="post-action">↗️ <span>Share</span></div>
+        </div>
+      </div>
+
+      <!-- Post 3 - Coach -->
+      <div class="post-card" style="border-left:3px solid var(--blue2)">
+        <div class="post-header">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:20px">🎯</div>
+          <div class="post-meta">
+            <div class="post-name">Coach Keiran <span class="badge badge-blue" style="font-size:9px;margin-left:4px">COACH</span></div>
+            <div class="post-time">Yesterday · Official</div>
+          </div>
+          <div class="post-more">⋯</div>
+        </div>
+        <div class="post-body">🚨 NEW DRILL ADDED: Advanced Sweep Shot Series is now live in Week 3! 16 new athletes joined this week — welcome to the Power Lab family 🏏⚡ This week's theme: POWER THROUGH THE V. See you all on the live call Thursday!</div>
+        <div class="post-actions">
+          <div class="post-action liked" onclick="toggleLike(this)">❤️ <span>412</span></div>
+          <div class="post-action" onclick="goto('screen-post-detail')">💬 <span>89</span></div>
+          <div class="post-action">↗️ <span>Share</span></div>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoTab('screen-home','home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-training','training')"><div class="nav-icon">🎯</div><div class="nav-label">Train</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-leaderboard','leaderboard')"><div class="nav-icon">🏆</div><div class="nav-label">Ranks</div></div>
+      <div class="nav-item active"><div class="nav-icon">💬</div><div class="nav-label">Lounge</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-profile','profile')"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       POST DETAIL SCREEN
+  ========================= -->
+  <div class="screen" id="screen-post-detail" style="display:none;flex-direction:column">
+    <div class="header-bar">
+      <div class="back-btn" onclick="goBack()">‹</div>
+      <div class="header-title">POST</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="scroll-area">
+      <div class="post-card" style="border-top:none">
+        <div class="post-header">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;color:#fff;font-size:17px">RK</div>
+          <div class="post-meta">
+            <div class="post-name">Ravi Kumar <span class="badge badge-orange" style="font-size:9px;margin-left:4px">#1</span></div>
+            <div class="post-time">2 hours ago</div>
+          </div>
+        </div>
+        <div class="post-body">Just finished Week 4 of the Power Batting program 🔥 The cover drive drill is 🤌 My timing is on another level now. Big thanks Coach Keiran! #PowerLab #CricketGrind</div>
+        <div class="post-media"><div style="font-size:48px">🏏</div><div class="post-play">▶</div></div>
+        <div class="post-actions"><div class="post-action liked">❤️ 247</div><div class="post-action">💬 38</div><div class="post-action">↗️ Share</div></div>
+      </div>
+      <!-- Comments -->
+      <div style="padding:12px 16px">
+        <div class="heading-sm" style="margin-bottom:12px">38 COMMENTS</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:10px">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0">🎯</div>
+            <div style="background:var(--card);border-radius:0 12px 12px 12px;padding:10px 12px;flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--blue2);margin-bottom:2px">Coach Keiran <span class="badge badge-blue" style="font-size:8px">COACH</span></div>
+              <div style="font-size:13px;color:var(--text2)">Incredible progress Ravi! That timing on the cover drive is world class 🙌</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#607d8b,#455a64);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">SA</div>
+            <div style="background:var(--card);border-radius:0 12px 12px 12px;padding:10px 12px;flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">Sam Anderson</div>
+              <div style="font-size:13px;color:var(--text2)">Beast mode activated 🔥 watch out for me next week though 👀</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">JM</div>
+            <div style="background:rgba(255,107,26,0.08);border:1px solid rgba(255,107,26,0.2);border-radius:0 12px 12px 12px;padding:10px 12px;flex:1">
+              <div style="font-size:13px;font-weight:700;color:var(--orange);margin-bottom:2px">Jake Mitchell (You)</div>
+              <div style="font-size:13px;color:var(--text2)">Bro that video is 🔥 What week of the program are you on?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="height:80px"></div>
+    </div>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:10px;align-items:center">
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">JM</div>
+      <input class="input-field" placeholder="Add a comment..." style="flex:1;padding:10px 14px;border-radius:20px">
+      <div style="font-size:22px;cursor:pointer;color:var(--orange)">➤</div>
+    </div>
+  </div>
+
+  <!-- ========================
+       LIVE SESSION SCREEN
+  ========================= -->
+  <div class="screen" id="screen-live" style="display:none;flex-direction:column">
+    <div class="header-bar">
+      <div class="header-title">LIVE COACHING</div>
+      <div class="badge badge-green" style="gap:6px"><div class="live-dot" style="margin:0;width:6px;height:6px"></div>LIVE SOON</div>
+    </div>
+    <div class="scroll-area">
+      <div class="live-hero">
+        <div style="font-size:13px;color:var(--text2);font-weight:600;margin-bottom:4px">NEXT SESSION IN</div>
+        <div class="live-big-countdown" id="live-big-timer">01<span class="colon">:</span>42<span class="colon">:</span>30</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px">Thursday, 6:00 PM AEST</div>
+        <!-- Zoom Join Button -->
+        <button class="btn-primary" style="margin-top:20px;max-width:260px;background:linear-gradient(135deg,var(--blue),var(--blue2));box-shadow:0 4px 20px var(--glow-b)">
+          📹 JOIN ON ZOOM
+        </button>
+        <div style="font-size:12px;color:var(--text3);margin-top:8px">Opens 10 min before session</div>
+      </div>
+
+      <!-- Upcoming Session -->
+      <div style="padding:0 20px 16px">
+        <div class="section-header"><div class="heading-sm">THIS WEEK'S SESSION</div></div>
+        <div class="session-card" style="border-color:rgba(41,121,255,0.4);background:linear-gradient(135deg,rgba(41,121,255,0.06),var(--card))">
+          <div class="session-card-top">
+            <div>
+              <div class="session-num">SESSION #24</div>
+              <div class="session-title">Advanced Batting Masterclass</div>
+              <div class="session-meta">
+                <div class="session-meta-item">🎯 Coach Keiran</div>
+                <div class="session-meta-item">⏱ 90 min</div>
+              </div>
+              <div class="session-meta" style="margin-top:4px">
+                <div class="session-meta-item">👥 142 registered</div>
+              </div>
+            </div>
+            <div class="badge badge-blue">UPCOMING</div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:13px;color:var(--text2)">🎯 Topics: Pull shot mechanics, Sweep shot strategy, Q&A with live feedback</div>
+        </div>
+      </div>
+
+      <!-- Past Sessions -->
+      <div style="padding:0 20px">
+        <div class="section-header"><div class="heading-sm">PAST SESSIONS</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="session-card" style="cursor:pointer">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div class="session-num">SESSION #23</div>
+                <div class="session-title" style="font-size:14px">Footwork & Movement</div>
+                <div class="session-meta" style="margin-top:4px"><div class="session-meta-item">📅 Last Thursday</div><div class="session-meta-item">⏱ 88 min</div></div>
+              </div>
+              <div style="text-align:right">
+                <div class="badge badge-green" style="margin-bottom:6px">ATTENDED ✓</div>
+                <div style="font-size:11px;color:var(--orange);font-weight:700">+250 pts earned</div>
+              </div>
+            </div>
+          </div>
+          <div class="session-card" style="cursor:pointer">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div class="session-num">SESSION #22</div>
+                <div class="session-title" style="font-size:14px">Mental Prep & Pressure Batting</div>
+                <div class="session-meta" style="margin-top:4px"><div class="session-meta-item">📅 2 weeks ago</div><div class="session-meta-item">⏱ 95 min</div></div>
+              </div>
+              <div style="text-align:right">
+                <div class="badge badge-green" style="margin-bottom:6px">ATTENDED ✓</div>
+                <div style="font-size:11px;color:var(--orange);font-weight:700">+250 pts earned</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="height:20px"></div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoTab('screen-home','home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-training','training')"><div class="nav-icon">🎯</div><div class="nav-label">Train</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-leaderboard','leaderboard')"><div class="nav-icon">🏆</div><div class="nav-label">Ranks</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-community','community')"><div class="nav-icon">💬</div><div class="nav-label">Lounge</div></div>
+      <div class="nav-item active" onclick="gotoTab('screen-profile','profile')"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       PROGRESS SCREEN
+  ========================= -->
+  <div class="screen" id="screen-progress" style="display:none;flex-direction:column">
+    <div class="header-bar">
+      <div class="back-btn" onclick="goBack()">‹</div>
+      <div class="header-title">MY PROGRESS</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="scroll-area" style="padding:0 20px 20px">
+      <!-- Weekly Points Chart -->
+      <div class="section-header"><div class="heading-sm">POINTS THIS WEEK</div><div class="badge badge-orange">+4,820 pts</div></div>
+      <div class="card" style="padding:16px;margin-bottom:16px">
+        <div class="chart-bars">
+          <div class="chart-bar dim" style="height:30%"></div>
+          <div class="chart-bar" style="height:55%"></div>
+          <div class="chart-bar" style="height:40%"></div>
+          <div class="chart-bar" style="height:70%"></div>
+          <div class="chart-bar" style="height:85%"></div>
+          <div class="chart-bar" style="height:60%"></div>
+          <div class="chart-bar dim" style="height:20%;background:rgba(255,107,26,0.3)"></div>
+        </div>
+        <div class="chart-labels">
+          <div class="chart-label">MON</div>
+          <div class="chart-label">TUE</div>
+          <div class="chart-label">WED</div>
+          <div class="chart-label">THU</div>
+          <div class="chart-label">FRI</div>
+          <div class="chart-label">SAT</div>
+          <div class="chart-label" style="color:var(--orange)">TODAY</div>
+        </div>
+      </div>
+
+      <!-- Ring Stats -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="stat-ring-row">
+          <div class="stat-ring">
+            <svg width="70" height="70" class="ring-chart"><circle cx="35" cy="35" r="28" fill="none" stroke="var(--bg3)" stroke-width="6"/><circle cx="35" cy="35" r="28" fill="none" stroke="var(--orange)" stroke-width="6" stroke-dasharray="176" stroke-dashoffset="46" stroke-linecap="round"/></svg>
+            <div class="ring-val" style="margin-top:-54px;text-align:center;font-size:18px">74%</div>
+            <div style="margin-top:44px" class="ring-label">Weekly Goal</div>
+          </div>
+          <div class="stat-ring">
+            <svg width="70" height="70" class="ring-chart"><circle cx="35" cy="35" r="28" fill="none" stroke="var(--bg3)" stroke-width="6"/><circle cx="35" cy="35" r="28" fill="none" stroke="var(--green)" stroke-width="6" stroke-dasharray="176" stroke-dashoffset="62" stroke-linecap="round"/></svg>
+            <div class="ring-val" style="margin-top:-54px;text-align:center;font-size:18px;color:var(--green)">65%</div>
+            <div style="margin-top:44px" class="ring-label">Drills Done</div>
+          </div>
+          <div class="stat-ring">
+            <svg width="70" height="70" class="ring-chart"><circle cx="35" cy="35" r="28" fill="none" stroke="var(--bg3)" stroke-width="6"/><circle cx="35" cy="35" r="28" fill="none" stroke="var(--blue2)" stroke-width="6" stroke-dasharray="176" stroke-dashoffset="88" stroke-linecap="round"/></svg>
+            <div class="ring-val" style="margin-top:-54px;text-align:center;font-size:18px;color:var(--blue2)">50%</div>
+            <div style="margin-top:44px" class="ring-label">Attendance</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Breakdown -->
+      <div class="section-header"><div class="heading-sm">SKILL LEVELS</div></div>
+      <div class="card" style="padding:16px;margin-bottom:16px">
+        <div class="skill-bar">
+          <div class="skill-bar-top"><span class="skill-name">🏏 Batting Technique</span><span class="skill-val">82%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:82%"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar-top"><span class="skill-name">🏃 Footwork & Movement</span><span class="skill-val" style="color:var(--green)">67%</span></div>
+          <div class="progress-track"><div class="progress-fill green" style="width:67%"></div></div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar-top"><span class="skill-name">💪 Power & Strength</span><span class="skill-val" style="color:var(--blue2)">55%</span></div>
+          <div class="progress-track"><div class="progress-fill blue" style="width:55%"></div></div>
+        </div>
+        <div class="skill-bar" style="margin-bottom:0">
+          <div class="skill-bar-top"><span class="skill-name">🧠 Mental Game</span><span class="skill-val">70%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:70%"></div></div>
+        </div>
+      </div>
+
+      <!-- Streak -->
+      <div class="section-header"><div class="heading-sm">TRAINING STREAK</div><div class="badge badge-orange">🔥 7 days</div></div>
+      <div class="card" style="padding:14px;display:flex;gap:8px;justify-content:center;margin-bottom:16px">
+        <div style="text-align:center;flex:1">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">✓</div>
+          <div style="font-size:9px;color:var(--text3)">MON</div>
+        </div>
+        <div style="text-align:center;flex:1">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">✓</div>
+          <div style="font-size:9px;color:var(--text3)">TUE</div>
+        </div>
+        <div style="text-align:center;flex:1">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">✓</div>
+          <div style="font-size:9px;color:var(--text3)">WED</div>
+        </div>
+        <div style="text-align:center;flex:1">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">✓</div>
+          <div style="font-size:9px;color:var(--text3)">THU</div>
+        </div>
+        <div style="text-align:center;flex:1">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">✓</div>
+          <div style="font-size:9px;color:var(--text3)">FRI</div>
+        </div>
+        <div style="text-align:center;flex:1">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;margin:0 auto 4px">✓</div>
+          <div style="font-size:9px;color:var(--text3)">SAT</div>
+        </div>
+        <div style="text-align:center;flex:1">
+          <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--orange);display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 4px">🔥</div>
+          <div style="font-size:9px;color:var(--orange);font-weight:700">TODAY</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================
+       NOTIFICATIONS SCREEN
+  ========================= -->
+  <div class="screen" id="screen-notifications" style="display:none;flex-direction:column">
+    <div class="header-bar">
+      <div class="back-btn" onclick="goBack()">‹</div>
+      <div class="header-title">NOTIFICATIONS</div>
+      <button class="btn-ghost" style="font-size:13px;color:var(--orange)">Mark all read</button>
+    </div>
+    <div class="scroll-area">
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:rgba(255,107,26,0.15)">🏆</div>
+        <div class="notif-body">
+          <div class="notif-title">You moved up 4 places! 🎉</div>
+          <div class="notif-desc">You're now ranked #12 globally. Keep completing drills to enter the Top 10!</div>
+          <div class="notif-time">2 hours ago</div>
+        </div>
+        <div class="notif-unread-dot"></div>
+      </div>
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:rgba(0,230,118,0.12)">🔥</div>
+        <div class="notif-body">
+          <div class="notif-title">7-Day Streak! You're on fire</div>
+          <div class="notif-desc">You've trained 7 days in a row. +500 bonus points awarded!</div>
+          <div class="notif-time">6 hours ago</div>
+        </div>
+        <div class="notif-unread-dot"></div>
+      </div>
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:rgba(41,121,255,0.15)">📹</div>
+        <div class="notif-body">
+          <div class="notif-title">Live Session Tomorrow!</div>
+          <div class="notif-desc">Advanced Batting Masterclass with Coach Keiran. Thursday 6:00 PM AEST.</div>
+          <div class="notif-time">Yesterday</div>
+        </div>
+        <div class="notif-unread-dot"></div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon" style="background:rgba(170,0,255,0.12)">💬</div>
+        <div class="notif-body">
+          <div class="notif-title">Coach Keiran replied to your comment</div>
+          <div class="notif-desc">"Great progress this week Jake! Your cover drive timing is really improving 🙌"</div>
+          <div class="notif-time">2 days ago</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon" style="background:rgba(255,107,26,0.15)">🆕</div>
+        <div class="notif-body">
+          <div class="notif-title">New Drill Added: Sweep Shot Series</div>
+          <div class="notif-desc">5 new drills added to Week 3. Complete them to earn 750 pts!</div>
+          <div class="notif-time">3 days ago</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon" style="background:rgba(0,230,118,0.12)">❤️</div>
+        <div class="notif-body">
+          <div class="notif-title">Ravi Kumar liked your post</div>
+          <div class="notif-desc">Your training video got 24 likes in the Power Hitters Lounge!</div>
+          <div class="notif-time">4 days ago</div>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       PROFILE SCREEN
+  ========================= -->
+  <div class="screen" id="screen-profile" style="display:none;flex-direction:column">
+    <div class="header-bar">
+      <div class="header-title">PROFILE</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:13px;cursor:pointer">⚙️</div>
+    </div>
+    <div class="scroll-area">
+      <div class="profile-hero">
+        <div class="profile-avatar-ring">JM</div>
+        <div class="profile-name">JAKE MITCHELL</div>
+        <div class="profile-role">🏏 Batsman · Australia 🇦🇺</div>
+        <div style="margin-top:8px"><div class="badge badge-orange">POWER MEMBER</div></div>
+        <div class="profile-stats">
+          <div class="profile-stat"><div class="profile-stat-val text-orange">#12</div><div class="profile-stat-label">Global Rank</div></div>
+          <div class="profile-stat"><div class="profile-stat-val">4,820</div><div class="profile-stat-label">Total Points</div></div>
+          <div class="profile-stat"><div class="profile-stat-val text-green">24</div><div class="profile-stat-label">Drills Done</div></div>
+          <div class="profile-stat"><div class="profile-stat-val">🔥7</div><div class="profile-stat-label">Day Streak</div></div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div style="padding:16px 20px 0">
+        <div class="section-header"><div class="heading-sm">OVERALL PROGRESS</div><button class="btn-ghost" onclick="goto('screen-progress')" style="color:var(--orange);font-size:13px">Details</button></div>
+        <div class="card" style="padding:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:13px;color:var(--text2)">Training completion</span>
+            <span style="font-size:13px;font-weight:700;color:var(--orange)">37%</span>
+          </div>
+          <div class="progress-track" style="height:8px"><div class="progress-fill" style="width:37%"></div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--text3)">
+            <span>24 / 65 drills completed</span>
+            <span>Week 3 of 8</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievements -->
+      <div style="padding:16px 20px 0">
+        <div class="section-header"><div class="heading-sm">ACHIEVEMENTS</div><button class="btn-ghost" style="color:var(--orange);font-size:13px">See all</button></div>
+        <div class="achievement-row">
+          <div class="achievement-item">
+            <div class="achievement-badge" style="background:rgba(255,107,26,0.15);border:1px solid rgba(255,107,26,0.3)">🏆</div>
+            <div class="achievement-name">Top 15</div>
+          </div>
+          <div class="achievement-item">
+            <div class="achievement-badge" style="background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.25)">🔥</div>
+            <div class="achievement-name">7-Day Streak</div>
+          </div>
+          <div class="achievement-item">
+            <div class="achievement-badge" style="background:rgba(41,121,255,0.15);border:1px solid rgba(41,121,255,0.3)">📹</div>
+            <div class="achievement-name">Video Star</div>
+          </div>
+          <div class="achievement-item">
+            <div class="achievement-badge" style="background:rgba(170,0,255,0.12);border:1px solid rgba(170,0,255,0.3)">⭐</div>
+            <div class="achievement-name">Top Poster</div>
+          </div>
+          <div class="achievement-item">
+            <div class="achievement-badge" style="background:rgba(255,107,26,0.08);border:1px dashed rgba(255,107,26,0.2);opacity:0.4">🎯</div>
+            <div class="achievement-name" style="color:var(--text3)">Locked</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Menu -->
+      <div style="margin-top:16px">
+        <div style="padding:0 20px;margin-bottom:8px"><div class="heading-sm">ACCOUNT</div></div>
+        <div class="profile-menu-item"><span class="menu-icon">👤</span><span class="menu-label">Edit Profile</span><span class="menu-arrow">›</span></div>
+        <div class="profile-menu-item" onclick="goto('screen-notifications')"><span class="menu-icon">🔔</span><span class="menu-label">Notifications</span><span class="menu-arrow">›</span></div>
+        <div class="profile-menu-item"><span class="menu-icon">💳</span><span class="menu-label">Subscription</span><div class="badge badge-orange" style="margin-right:8px;font-size:10px">ACTIVE</div><span class="menu-arrow">›</span></div>
+        <div class="profile-menu-item"><span class="menu-icon">🔒</span><span class="menu-label">Privacy & Security</span><span class="menu-arrow">›</span></div>
+        <div class="profile-menu-item"><span class="menu-icon">❓</span><span class="menu-label">Help & Support</span><span class="menu-arrow">›</span></div>
+        <div class="profile-menu-item" onclick="goto('screen-role-select')"><span class="menu-icon">🚪</span><span class="menu-label" style="color:#f44336">Sign Out</span><span class="menu-arrow">›</span></div>
+      </div>
+      <div style="height:20px"></div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="gotoTab('screen-home','home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-training','training')"><div class="nav-icon">🎯</div><div class="nav-label">Train</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-leaderboard','leaderboard')"><div class="nav-icon">🏆</div><div class="nav-label">Ranks</div></div>
+      <div class="nav-item" onclick="gotoTab('screen-community','community')"><div class="nav-icon">💬</div><div class="nav-label">Lounge</div></div>
+      <div class="nav-item active"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       COACH LOGIN SCREEN
+  ========================= -->
+  <div class="screen" id="screen-coach-login" style="display:none;flex-direction:column;overflow-y:auto">
+    <div class="header-bar" style="padding-top:16px">
+      <div class="back-btn" onclick="goto('screen-role-select')">‹</div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="login-top" style="padding-top:8px">
+      <div style="font-size:40px;margin-bottom:8px">🎯</div>
+      <div class="heading-md" style="font-size:28px">COACH PORTAL</div>
+      <div class="login-sub">Welcome back, Coach Keiran</div>
+    </div>
+    <div class="login-form" style="padding:16px 24px">
+      <div><label class="input-label">Email</label><input class="input-field" placeholder="coach@powerlab.com"></div>
+      <div><label class="input-label">Password</label><input class="input-field" type="password" placeholder="••••••••"></div>
+      <button class="btn-primary" onclick="goto('screen-coach')" style="margin-top:8px">SIGN IN AS COACH</button>
+    </div>
+  </div>
+
+  <!-- ========================
+       COACH DASHBOARD SCREEN
+  ========================= -->
+  <div class="screen" id="screen-coach" style="display:none;flex-direction:column">
+    <div class="admin-header" style="padding-top:12px">
+      <div class="admin-logo">🎯 COACH PORTAL</div>
+      <div class="admin-title">KEIRAN'S DASHBOARD</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+        <div class="badge badge-blue">Session #24 · Tomorrow</div>
+        <div class="badge badge-green">142 Athletes</div>
+      </div>
+    </div>
+    <div class="scroll-area">
+      <!-- Quick Stats -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:16px 20px">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange)">142</div>
+          <div style="font-size:10px;color:var(--text2);font-weight:600">Athletes</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green)">87%</div>
+          <div style="font-size:10px;color:var(--text2);font-weight:600">Engagement</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--blue2)">24</div>
+          <div style="font-size:10px;color:var(--text2);font-weight:600">Sessions</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="padding:0 20px 16px">
+        <div class="section-header"><div class="heading-sm">QUICK ACTIONS</div></div>
+        <div class="admin-action-grid">
+          <div class="admin-action" onclick="goto('screen-coach-upload')"><div class="admin-action-icon">📹</div><div class="admin-action-label">Upload Video</div></div>
+          <div class="admin-action"><div class="admin-action-icon">✏️</div><div class="admin-action-label">Create Drill</div></div>
+          <div class="admin-action"><div class="admin-action-icon">📅</div><div class="admin-action-label">Schedule</div></div>
+          <div class="admin-action"><div class="admin-action-icon">📊</div><div class="admin-action-label">Analytics</div></div>
+          <div class="admin-action"><div class="admin-action-icon">💬</div><div class="admin-action-label">Community</div></div>
+          <div class="admin-action"><div class="admin-action-icon">🏆</div><div class="admin-action-label">Challenges</div></div>
+        </div>
+      </div>
+
+      <!-- Top Athletes -->
+      <div style="padding:0 20px 16px">
+        <div class="section-header"><div class="heading-sm">TOP ATHLETES</div><button class="btn-ghost" style="color:var(--orange);font-size:13px">View all</button></div>
+        <div class="card" style="padding:4px 14px">
+          <div class="athlete-row"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">RK</div><div class="athlete-info"><div class="athlete-name">Ravi Kumar</div><div class="athlete-meta">#1 Global · India 🇮🇳</div></div><div class="athlete-progress"><div class="athlete-pct">95%</div><div class="athlete-level">Week 4/8</div></div></div>
+          <div class="athlete-row"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#607d8b,#455a64);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">SA</div><div class="athlete-info"><div class="athlete-name">Sam Anderson</div><div class="athlete-meta">#2 Global · Australia 🇦🇺</div></div><div class="athlete-progress"><div class="athlete-pct">88%</div><div class="athlete-level">Week 4/8</div></div></div>
+          <div class="athlete-row"><div style="width:32px;height:32px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">JM</div><div class="athlete-info"><div class="athlete-name">Jake Mitchell</div><div class="athlete-meta">#12 Global · Australia 🇦🇺</div></div><div class="athlete-progress"><div class="athlete-pct">37%</div><div class="athlete-level">Week 3/8</div></div></div>
+          <div class="athlete-row" style="border-bottom:none"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4a148c,#6a1b9a);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">PB</div><div class="athlete-info"><div class="athlete-name">Priya Bhatt</div><div class="athlete-meta">#6 Global · India 🇮🇳</div></div><div class="athlete-progress"><div class="athlete-pct">72%</div><div class="athlete-level">Week 3/8</div></div></div>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       COACH UPLOAD SCREEN
+  ========================= -->
+  <div class="screen" id="screen-coach-upload" style="display:none;flex-direction:column;overflow-y:auto">
+    <div class="header-bar" style="padding-top:16px">
+      <div class="back-btn" onclick="goto('screen-coach')">‹</div>
+      <div class="header-title">UPLOAD CONTENT</div>
+      <div style="width:36px"></div>
+    </div>
+    <div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px">
+      <div class="upload-zone">
+        <div class="upload-icon">📹</div>
+        <div class="upload-text">Drop video file here</div>
+        <div class="upload-sub">MP4, MOV up to 2GB</div>
+        <button class="btn-primary" style="margin-top:14px;width:auto;padding:12px 24px">Browse Files</button>
+      </div>
+      <div><label class="input-label">Drill Title</label><input class="input-field" placeholder="e.g. Power Drive Technique"></div>
+      <div><label class="input-label">Module</label><input class="input-field" placeholder="e.g. Week 3 — Batting"></div>
+      <div><label class="input-label">Program</label><input class="input-field" placeholder="Power Batting Mastery"></div>
+      <div>
+        <label class="input-label">Points Value</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div style="background:var(--orange);border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:700;color:#fff;cursor:pointer">150 pts</div>
+          <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer">200 pts</div>
+          <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer">300 pts</div>
+        </div>
+      </div>
+      <div><label class="input-label">Description</label><textarea class="input-field" rows="3" placeholder="Describe what athletes will learn..." style="resize:none"></textarea></div>
+      <button class="btn-primary" onclick="goto('screen-coach')">PUBLISH DRILL</button>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ========================
+       ADMIN DASHBOARD SCREEN
+  ========================= -->
+  <div class="screen" id="screen-admin" style="display:none;flex-direction:column">
+    <div class="admin-header">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div class="admin-logo">⚙️ ADMIN PANEL</div>
+          <div class="admin-title">POWER LAB HQ</div>
+        </div>
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer" onclick="goto('screen-role-select')">👤</div>
+      </div>
+    </div>
+    <div class="scroll-area">
+      <!-- Key Metrics -->
+      <div class="admin-stat-grid">
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon">👥</div>
+          <div class="admin-stat-val">4,218</div>
+          <div class="admin-stat-label">Total Athletes</div>
+          <div class="admin-stat-change">▲ +142 this week</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon">💰</div>
+          <div class="admin-stat-val">$122K</div>
+          <div class="admin-stat-label">MRR</div>
+          <div class="admin-stat-change">▲ +8.4% MoM</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon">📹</div>
+          <div class="admin-stat-val">1,840</div>
+          <div class="admin-stat-label">Daily Drill Views</div>
+          <div class="admin-stat-change">▲ +12%</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-icon">🔄</div>
+          <div class="admin-stat-val">89%</div>
+          <div class="admin-stat-label">Retention Rate</div>
+          <div class="admin-stat-change" style="color:var(--blue2)">▲ Industry avg: 71%</div>
+        </div>
+      </div>
+
+      <!-- Revenue Chart -->
+      <div class="admin-section">
+        <div class="section-header"><div class="heading-sm">MONTHLY REVENUE</div><div class="badge badge-green">+8.4% MoM</div></div>
+        <div class="card" style="padding:14px">
+          <div class="chart-bars" style="height:70px">
+            <div class="chart-bar" style="height:50%;background:linear-gradient(to top,var(--blue),var(--blue2))"></div>
+            <div class="chart-bar" style="height:60%;background:linear-gradient(to top,var(--blue),var(--blue2))"></div>
+            <div class="chart-bar" style="height:55%;background:linear-gradient(to top,var(--blue),var(--blue2))"></div>
+            <div class="chart-bar" style="height:75%;background:linear-gradient(to top,var(--blue),var(--blue2))"></div>
+            <div class="chart-bar" style="height:80%;background:linear-gradient(to top,var(--blue),var(--blue2))"></div>
+            <div class="chart-bar" style="height:70%;background:linear-gradient(to top,var(--blue),var(--blue2))"></div>
+            <div class="chart-bar" style="height:100%;background:linear-gradient(to top,var(--orange),var(--orange2))"></div>
+          </div>
+          <div class="chart-labels">
+            <div class="chart-label">JAN</div><div class="chart-label">FEB</div><div class="chart-label">MAR</div><div class="chart-label">APR</div><div class="chart-label">MAY</div><div class="chart-label">JUN</div><div class="chart-label" style="color:var(--orange)">JUL</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Actions -->
+      <div class="admin-section">
+        <div class="section-header"><div class="heading-sm">MANAGEMENT</div></div>
+        <div class="admin-action-grid">
+          <div class="admin-action"><div class="admin-action-icon">👥</div><div class="admin-action-label">Users</div></div>
+          <div class="admin-action"><div class="admin-action-icon">📹</div><div class="admin-action-label">CMS</div></div>
+          <div class="admin-action"><div class="admin-action-icon">🏆</div><div class="admin-action-label">Rankings</div></div>
+          <div class="admin-action"><div class="admin-action-icon">📅</div><div class="admin-action-label">Sessions</div></div>
+          <div class="admin-action"><div class="admin-action-icon">💳</div><div class="admin-action-label">Billing</div></div>
+          <div class="admin-action"><div class="admin-action-icon">📊</div><div class="admin-action-label">Analytics</div></div>
+        </div>
+      </div>
+
+      <!-- Recent Users -->
+      <div class="admin-section">
+        <div class="section-header"><div class="heading-sm">RECENT SIGNUPS</div><button class="btn-ghost" style="color:var(--orange);font-size:13px">View all</button></div>
+        <div class="card" style="padding:4px 14px">
+          <div class="user-row"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">AH</div><div class="user-row-info"><div class="user-row-name">Ahsan Hamid</div><div class="user-row-meta">Pakistan · 2h ago</div></div><div class="user-row-status status-active">● Active</div></div>
+          <div class="user-row"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#4a148c,#6a1b9a);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">NG</div><div class="user-row-info"><div class="user-row-name">Nadia Garcia</div><div class="user-row-meta">Spain · 5h ago</div></div><div class="user-row-status status-active">● Active</div></div>
+          <div class="user-row" style="border-bottom:none"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff">DW</div><div class="user-row-info"><div class="user-row-name">Daniel Wang</div><div class="user-row-meta">Singapore · 1d ago</div></div><div class="user-row-status status-active">● Active</div></div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Controls -->
+      <div class="admin-section">
+        <div class="section-header"><div class="heading-sm">LEADERBOARD ENGINE</div></div>
+        <div class="card" style="padding:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div><div style="font-size:14px;font-weight:700;color:var(--text)">Weekly Reset</div><div style="font-size:12px;color:var(--text3)">Next reset: Sunday 12:00 AM UTC</div></div>
+            <div class="badge badge-orange">AUTO</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div><div style="font-size:14px;font-weight:700;color:var(--text)">Drill Points</div><div style="font-size:12px;color:var(--text3)">150–300 pts per drill</div></div>
+            <button class="btn-ghost" style="color:var(--orange);font-size:13px">Edit</button>
+          </div>
+          <button class="btn-secondary" style="font-size:13px;padding:10px">🔄 RESET WEEKLY RANKINGS NOW</button>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+    </div>
+  </div>
+
+  <!-- ========================
+       NEW POST SCREEN
+  ========================= -->
+  <div class="screen" id="screen-new-post" style="display:none;flex-direction:column;overflow-y:auto">
+    <div class="header-bar" style="padding-top:16px">
+      <div class="back-btn" onclick="goto('screen-community')">‹</div>
+      <div class="header-title">NEW POST</div>
+      <button class="btn-primary" style="width:auto;padding:8px 16px;font-size:13px" onclick="goto('screen-community')">POST</button>
+    </div>
+    <div style="padding:12px 20px;display:flex;gap:12px;align-items:flex-start">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;color:#fff;flex-shrink:0">JM</div>
+      <textarea class="input-field" placeholder="Share your training progress, tips, or victories with the Lounge..." style="resize:none;border-radius:12px;min-height:120px;padding:12px;font-size:15px;line-height:1.5"></textarea>
+    </div>
+    <div style="padding:0 20px 12px;display:flex;gap:10px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;flex:1;text-align:center;cursor:pointer">
+        <div style="font-size:24px;margin-bottom:4px">📹</div>
+        <div style="font-size:11px;color:var(--text2);font-weight:600">Add Video</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;flex:1;text-align:center;cursor:pointer">
+        <div style="font-size:24px;margin-bottom:4px">🖼</div>
+        <div style="font-size:11px;color:var(--text2);font-weight:600">Add Photo</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;flex:1;text-align:center;cursor:pointer">
+        <div style="font-size:24px;margin-bottom:4px">🏷</div>
+        <div style="font-size:11px;color:var(--text2);font-weight:600">Tag #</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /phone-shell -->
+
+<script>
+  // ——— STATE ———
+  let currentScreen = 'screen-splash';
+  let previousScreen = null;
+  let currentRole = 'athlete';
+  let obSlide = 0;
+  let isPlaying = false;
+  let loginRole = 'athlete';
+
+  // ——— NAVIGATION ———
+  function goto(id) {
+    const old = document.getElementById(currentScreen);
+    const next = document.getElementById(id);
+    if (!next) return;
+    if (old) old.style.display = 'none';
+    old && (old.className = old.className.replace(' active',''));
+    next.style.display = 'flex';
+    next.className += ' active screen-enter';
+    setTimeout(() => next.classList.remove('screen-enter'), 400);
+    previousScreen = currentScreen;
+    currentScreen = id;
+    // Scroll reset
+    const sa = next.querySelector('.scroll-area');
+    if (sa) sa.scrollTop = 0;
+  }
+
+  function gotoTab(screenId, tabId) {
+    goto(screenId);
+  }
+
+  function goBack() {
+    if (previousScreen) {
+      const tmp = currentScreen;
+      goto(previousScreen);
+      previousScreen = tmp;
+    }
+  }
+
+  function setRole(r) { currentRole = r; }
+
+  function showBottomNav() {
+    // Nav already in home screen
+  }
+
+  // ——— SPLASH AUTO-ADVANCE ———
+  setTimeout(() => goto('screen-role-select'), 2200);
+
+  // ——— LOGIN ROLE TABS ———
+  function switchLoginTab(el, role) {
+    document.querySelectorAll('.role-tabs .role-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    loginRole = role.toLowerCase();
+  }
+
+  function handleLogin() {
+    if (loginRole === 'coach') goto('screen-coach');
+    else if (loginRole === 'admin') goto('screen-admin');
+    else goto('screen-onboarding');
+  }
+
+  // ——— ONBOARDING ———
+  function nextOnboardSlide() {
+    const slides = document.querySelectorAll('.onboard-slide');
+    const dots = document.querySelectorAll('.onboard-dot');
+    if (obSlide < slides.length - 1) {
+      slides[obSlide].style.display = 'none';
+      dots[obSlide].classList.remove('active');
+      obSlide++;
+      slides[obSlide].style.display = 'flex';
+      dots[obSlide].classList.add('active');
+      if (obSlide === slides.length - 1) {
+        document.getElementById('ob-next-btn').textContent = "LET'S GO →";
+        document.getElementById('ob-next-btn').onclick = () => goto('screen-subscription');
+      }
+    } else {
+      goto('screen-subscription');
+    }
+  }
+
+  // ——— SUBSCRIPTION PLAN ———
+  function selectPlan(plan) {
+    const m = document.getElementById('plan-monthly');
+    const a = document.getElementById('plan-annual');
+    const cm = document.getElementById('check-monthly');
+    const ca = document.getElementById('check-annual');
+    if (plan === 'monthly') {
+      m.classList.add('selected');
+      a.classList.remove('selected');
+      cm.style.background = 'var(--orange)';
+      cm.style.borderColor = 'var(--orange)';
+      cm.style.color = '#fff';
+      ca.style.background = 'transparent';
+      ca.style.borderColor = 'var(--border)';
+      ca.style.color = 'transparent';
+    } else {
+      a.classList.add('selected');
+      m.classList.remove('selected');
+      ca.style.background = 'var(--orange)';
+      ca.style.borderColor = 'var(--orange)';
+      ca.style.color = '#fff';
+      cm.style.background = 'transparent';
+      cm.style.borderColor = 'var(--border)';
+      cm.style.color = 'transparent';
+    }
+  }
+
+  // ——— TASK TOGGLE ———
+  function toggleTask(el) {
+    const isDone = el.classList.toggle('done');
+    const text = el.nextElementSibling;
+    if (isDone) {
+      el.textContent = '✓';
+      text.classList.add('done');
+    } else {
+      el.textContent = '';
+      text.classList.remove('done');
+    }
+  }
+
+  // ——— LEADERBOARD TABS ———
+  function switchLbTab(el, tab) {
+    document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // ——— VIDEO PLAYER ———
+  function togglePlay() {
+    isPlaying = !isPlaying;
+    document.getElementById('play-btn').textContent = isPlaying ? '⏸' : '▶';
+    if (isPlaying) startVideoProgress();
+  }
+  let vidInterval = null;
+  let vidProg = 35;
+  function startVideoProgress() {
+    if (vidInterval) return;
+    vidInterval = setInterval(() => {
+      if (!isPlaying) { clearInterval(vidInterval); vidInterval = null; return; }
+      vidProg = Math.min(100, vidProg + 0.3);
+      const el = document.getElementById('video-prog');
+      if (el) el.style.width = vidProg + '%';
+      if (vidProg >= 100) { isPlaying = false; document.getElementById('play-btn').textContent = '▶'; clearInterval(vidInterval); vidInterval = null; }
+    }, 100);
+  }
+
+  // ——— MARK DONE ———
+  function markDone(el) {
+    el.style.background = 'rgba(0,230,118,0.2)';
+    el.style.borderColor = 'rgba(0,230,118,0.4)';
+    el.innerHTML = '<div style="font-size:20px">✅</div><div style="font-size:10px;color:var(--green);font-weight:700;margin-top:2px">DONE!</div>';
+  }
+
+  // ——— LIKE TOGGLE ———
+  function toggleLike(el) {
+    const isLiked = el.classList.toggle('liked');
+    const span = el.querySelector('span');
+    const currentNum = parseInt(span.textContent);
+    span.textContent = isLiked ? currentNum + 1 : currentNum - 1;
+    el.innerHTML = (isLiked ? '❤️ ' : '🤍 ') + '<span>' + (isLiked ? currentNum + 1 : currentNum - 1) + '</span>';
+    el.className = 'post-action' + (isLiked ? ' liked' : '');
+    el.setAttribute('onclick','toggleLike(this)');
+  }
+
+  // ——— LIVE COUNTDOWN TIMER ———
+  let totalSeconds = 6150; // 1h 42m 30s
+  function updateTimers() {
+    totalSeconds--;
+    if (totalSeconds < 0) totalSeconds = 0;
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    const fmt = n => String(n).padStart(2,'0');
+    const small = `${fmt(h)}:${fmt(m)}:${fmt(s)}`;
+    const big = `${fmt(h)}<span class="colon">:</span>${fmt(m)}<span class="colon">:</span>${fmt(s)}`;
+    const t1 = document.getElementById('live-timer');
+    const t2 = document.getElementById('live-big-timer');
+    if (t1) t1.textContent = small;
+    if (t2) t2.innerHTML = big;
+  }
+  setInterval(updateTimers, 1000);
+</script>
+</body>
+</html>
